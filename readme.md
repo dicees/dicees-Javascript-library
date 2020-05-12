@@ -22,6 +22,12 @@
 <dt><a href="#displayClassicalDice">displayClassicalDice(color, id)</a> ⇒ <code>Promise</code></dt>
 <dd><p>Change the dice display to show a classical dice with the values from 1 to 6.</p>
 </dd>
+<dt><a href="#displaySkin">displaySkin(number)</a> ⇒ <code>Promise</code></dt>
+<dd><p>Display a specified skin for all dicees.</p>
+</dd>
+<dt><a href="#displaySkin">displaySkin(number, id)</a> ⇒ <code>Promise</code></dt>
+<dd><p>Display a specified skin for a specific dice.</p>
+</dd>
 <dt><a href="#getDiceesCount">getDiceesCount()</a> ⇒ <code>Promise.&lt;number&gt;</code></dt>
 <dd><p>Return the number of dice connected to the app.</p>
 </dd>
@@ -36,7 +42,7 @@
 Once they have been rolled they will send their value back.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.</p>
 </dd>
-<dt><a href="#rollDiceesById">rollDiceesById(diceIdArray)</a> ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code></dt>
+<dt><a href="#rollDiceesByIds">rollDiceesByIds(diceIdArray)</a> ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code></dt>
 <dd><p>Send a message to the dice for them to wait to be rolled.<br/>
 Once they have been rolled they will their value back.<br/>
 You can choose specifically which dice to roll.<br/>
@@ -133,6 +139,29 @@ Change the dice display to show a classical dice with the values from 1 to 6.
 | color | <code>string</code> | hex color code of the color you want to apply (without '#') |
 | id | <code>number</code> | id of the dice you want to modify, starting from 0 |
 
+<a name="displaySkin"></a>
+
+## displaySkin(number) ⇒ <code>Promise</code>
+Display a specified skin for all dicees.
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| number | <code>number</code> | id of the skin you want to display |
+
+<a name="displaySkin"></a>
+
+## displaySkin(number, id) ⇒ <code>Promise</code>
+Display a specified skin for a specific dice.
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| number | <code>number</code> | id of the skin you want to display |
+| id | <code>number</code> | id of the dice you want to modify, starting from 0 |
+
 <a name="getDiceesCount"></a>
 
 ## getDiceesCount() ⇒ <code>Promise.&lt;number&gt;</code>
@@ -172,9 +201,9 @@ In developpment mode, you can use your F2 key to simulate a throw.
 | --- | --- | --- |
 | numberOfDice | <code>number</code> | number of dice to roll |
 
-<a name="rollDiceesById"></a>
+<a name="rollDiceesByIds"></a>
 
-## rollDiceesById(diceIdArray) ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code>
+## rollDiceesByIds(diceIdArray) ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code>
 In developpment mode, you can use your F2 key to simulate a throw.
 
 **Kind**: global function

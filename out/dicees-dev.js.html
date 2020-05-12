@@ -28,7 +28,73 @@
         <article>
             <pre class="prettyprint source linenums"><code>(function (window){
 
+  function copy(array){
+    return JSON.parse(JSON.stringify(array));
+  }
+
   let diceesData;
+  let facesInit = [
+    {
+      faceId : 0,
+      color : [
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"]
+      ]
+    },
+    {
+      faceId : 1,
+      color : [
+        ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
+      ]
+    },
+    {
+      faceId : 2,
+      color : [
+        ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
+      ]
+    },
+    {
+      faceId : 3,
+      color : [
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
+      ]
+    },
+    {
+      faceId : 4,
+      color : [
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
+      ]
+    },
+    {
+      faceId : 5,
+      color : [
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
+      ]
+    }
+  ];
 
   diceesData = {
     number : 5,
@@ -39,69 +105,10 @@
     diceesData.data[i] = {
       id: i,
       faceUp : 0,
-      state :  'normal',
-      faces: [
-        {
-          faceId : 0,
-          color : [
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"]
-          ]
-        },
-        {
-          faceId : 1,
-          color : [
-            ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
-          ]
-        },
-        {
-          faceId : 2,
-          color : [
-            ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
-          ]
-        },
-        {
-          faceId : 3,
-          color : [
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
-          ]
-        },
-        {
-          faceId : 4,
-          color : [
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
-          ]
-        },
-        {
-          faceId : 5,
-          color : [
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
-          ]
-        }
-      ]
+      activeSkin: 1,
+      state : 'normal',
+      skins : new Map(),
+      faces: copy(facesInit)
     }
   }
 
@@ -312,8 +319,8 @@
      * @returns {Promise}
      */
     Dicees.blink = function(numberOfBlink){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('blink', numberOfBlink);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('blink', numberOfBlink);
       }
       else{
         console.log(`The dicees will now blink ${numberOfBlink} times`);
@@ -331,8 +338,8 @@
      */
 
     Dicees.blinkById = function(numberOfBlink, id){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('blinkById', numberOfBlink, id);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('blinkById', numberOfBlink, id);
       }
       else{
         console.log(`The dicees ${id} will now blink ${numberOfBlink} times`);
@@ -347,8 +354,8 @@
      * @returns {Promise}
      */
     Dicees.cancelRollDiceesAutoDetect = function(){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('cancelRollDiceesAutoDetect');
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('cancelRollDiceesAutoDetect');
       }
       else{
         document.dispatchEvent(cancelAutoRoll);
@@ -365,8 +372,8 @@
      * @returns {Promise}
      */
     Dicees.changeDiceesColor = function(color, number){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('changeDiceesColor', color, number);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('changeDiceesColor', color, number);
       }
       else{
         let data = diceesData.data.slice();
@@ -403,8 +410,8 @@
      * @returns {Promise}
      */
     Dicees.changeDiceesColorById = function(color, diceIdArray){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('changeDiceesColorById', color, diceIdArray);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('changeDiceesColorById', color, diceIdArray);
       }
       else{
         let data = diceesData.data.slice();
@@ -448,8 +455,8 @@
      * @returns {Promise}
      */
     Dicees.changeDiceesFaceColor = function(color, id, face){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('changeDiceesFaceColor', color, id, face);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('changeDiceesFaceColor', color, id, face);
       }
       else{
         let data = diceesData.data.slice();
@@ -489,8 +496,8 @@
      * @returns {Promise}
      */
     Dicees.displayClassicalDice = function(color, id){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('displayClassicalDice', color, id);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('displayClassicalDice', color, id);
       }
       else{
         let data = diceesData.data.slice();
@@ -510,14 +517,78 @@
     }
 
     /**
+     * Display a specified skin for all dicees.
+     * @name displaySkin
+     * @method
+     * @param {number} number id of the skin you want to display
+     * @returns {Promise}
+     */
+    Dicees.displaySkin = function(number){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('displaySkin', number);
+      }
+      else{
+        let data = diceesData.data.slice();
+        for(let i=0; i&lt;data.length; i++){
+          if(data[i].activeSkin !== number){
+            data[i].skins.set(data[i].activeSkin, copy(data[i].faces));
+            if(data[i].skins.has(number)){
+              console.log('fired here!');
+              data[i].faces = data[i].skins.get(number);
+            }
+            else{
+              data[i].faces = copy(facesInit);
+            }
+            data[i].activeSkin = number;
+            console.log(`Skin of dice ${i} has been updated to skin ${number}`);
+          }
+        }
+        diceesData.data = data;
+        console.log(data);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
+     * Display a specified skin for a specific dice.
+     * @name displaySkin
+     * @method
+     * @param {number} number id of the skin you want to display
+     * @param {number} id id of the dice you want to modify, starting from 0
+     * @returns {Promise}
+     */
+    Dicees.displaySkinById = function(number, id){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('displaySkinById', number, id);
+      }
+      else{
+        let data = diceesData.data.slice();
+        if(data[id].activeSkin !== number){
+          data[id].skins.set(data[id].activeSkin, copy(data[id].faces));
+          if(data[id].skins.has(number)){
+            data[id].faces = data[id].skins.get(number);
+          }
+          else{
+            data[id].faces = copy(facesInit);
+          }
+          data[id].activeSkin = number;
+          console.log(`Skin of dice ${id} has been updated to skin ${number}`);
+        }
+        diceesData.data = data;
+        console.log(data);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
      * Return the number of dice connected to the app.
      * @name getDiceesCount
      * @method
      * @returns {Promise&lt;number>} Number of dice connected to the app.
      */
     Dicees.getDiceesCount = function(){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('getDiceesCount');
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('getDiceesCount');
       }
       else{
         return new Promise(resolve => resolve(getFakeDiceesData().number));
@@ -533,8 +604,8 @@
      * @returns {Promise&lt;Array&lt;Array&lt;string>>>} You can access any color this way: array[line][column] (line and column between 0 and 4).
      */
     Dicees.getFaceColors = function(id, faceNumber){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('getFaceColors', id, faceNumber);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('getFaceColors', id, faceNumber);
       }
       else{
         let data = diceesData.data.slice();
@@ -550,8 +621,8 @@
      * @returns {Promise&lt;Array&lt;{age: number, color: string, gender: string, id: number, name: string}>>} Array of Json, each Json stands for a player.
      */
     Dicees.getPlayers = function(){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('players');
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('players');
       }
       else{
         return new Promise(resolve => resolve(getFakePlayerJson()));
@@ -568,8 +639,8 @@
      * @returns {Promise&lt;Array&lt;number>>} Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).
      */
     Dicees.rollDicees = function(numberOfDice){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('rollDicees', numberOfDice);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('rollDicees', numberOfDice);
       }
       else{
         return new Promise(resolve => {
@@ -602,15 +673,15 @@
      * Once they have been rolled they will their value back.&lt;br/>
      * You can choose specifically which dice to roll.&lt;br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
-     * @name rollDiceesById
+     * @name rollDiceesByIds
      * @method
      * @param {Array&lt;number>} diceIdArray contains the ids of the dice you want to roll/reroll
      * @returns {Promise&lt;Array&lt;{id: number, value: number}>>} Array of Json. Each Json stands for a dice.&lt;br/>
      * Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).
      */
-    Dicees.rollDiceesById = function(diceIdArray){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('rollDiceesById', diceIdArray);
+    Dicees.rollDiceesByIds = function(diceIdArray){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('rollDiceesById', diceIdArray);
       }
       else{
         let diceesResult = [];
@@ -658,8 +729,8 @@
      * @returns {Promise&lt;Array&lt;Number>>} Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.
      */
     Dicees.rollDiceesAutoDetect = function(){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('rollDiceesAutoDetect');
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('rollDiceesAutoDetect');
       }
       else{
         return new Promise((resolve, reject) => {
@@ -730,8 +801,8 @@
      * @returns {Promise}
      */
     Dicees.setLedColor = function(color, id, face, column, line){
-      if(window.flutter_inappbrowser || window.flutter_inappbrowser != null || typeof window.flutter_inappbrowser !== "undefined"){
-        return window.flutter_inappbrowser.callHandler('setLedColor', color, id, column, line, face);
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('setLedColor', color, id, column, line, face);
       }
       else{
         let data = diceesData.data.slice();
@@ -759,13 +830,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesById">rollDiceesById</a></li><li><a href="global.html#setLedColor">setLedColor</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu May 07 2020 16:50:28 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue May 12 2020 17:57:30 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>
