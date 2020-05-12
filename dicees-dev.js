@@ -1,6 +1,72 @@
 (function (window){
 
+  function copy(array){
+    return JSON.parse(JSON.stringify(array));
+  }
+
   let diceesData;
+  let facesInit = [
+    {
+      faceId : 0,
+      color : [
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"]
+      ]
+    },
+    {
+      faceId : 1,
+      color : [
+        ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
+      ]
+    },
+    {
+      faceId : 2,
+      color : [
+        ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
+      ]
+    },
+    {
+      faceId : 3,
+      color : [
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
+      ]
+    },
+    {
+      faceId : 4,
+      color : [
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
+      ]
+    },
+    {
+      faceId : 5,
+      color : [
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
+        ["#000000", "#000000", "#000000", "#000000", "#000000"],
+        ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
+      ]
+    }
+  ];
 
   diceesData = {
     number : 5,
@@ -11,69 +77,10 @@
     diceesData.data[i] = {
       id: i,
       faceUp : 0,
-      state :  'normal',
-      faces: [
-        {
-          faceId : 0,
-          color : [
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"]
-          ]
-        },
-        {
-          faceId : 1,
-          color : [
-            ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
-          ]
-        },
-        {
-          faceId : 2,
-          color : [
-            ["#000000", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#000000"]
-          ]
-        },
-        {
-          faceId : 3,
-          color : [
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
-          ]
-        },
-        {
-          faceId : 4,
-          color : [
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#000000", "#000000", "#0000ff", "#000000", "#000000"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
-          ]
-        },
-        {
-          faceId : 5,
-          color : [
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"],
-            ["#000000", "#000000", "#000000", "#000000", "#000000"],
-            ["#0000ff", "#000000", "#000000", "#000000", "#0000ff"]
-          ]
-        }
-      ]
+      activeSkin: 1,
+      state : 'normal',
+      skins : new Map(),
+      faces: copy(facesInit)
     }
   }
 
@@ -477,6 +484,70 @@
         diceesData.data = data;
         console.log(diceesData);
         console.log(`Dice number ${id} now displays a classical dice. Its new color is : ${color}`);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
+     * Display a specified skin for all dicees.
+     * @name displaySkin
+     * @method
+     * @param {number} number id of the skin you want to display
+     * @returns {Promise}
+     */
+    Dicees.displaySkin = function(number){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('displaySkin', number);
+      }
+      else{
+        let data = diceesData.data.slice();
+        for(let i=0; i<data.length; i++){
+          if(data[i].activeSkin !== number){
+            data[i].skins.set(data[i].activeSkin, copy(data[i].faces));
+            if(data[i].skins.has(number)){
+              console.log('fired here!');
+              data[i].faces = data[i].skins.get(number);
+            }
+            else{
+              data[i].faces = copy(facesInit);
+            }
+            data[i].activeSkin = number;
+            console.log(`Skin of dice ${i} has been updated to skin ${number}`);
+          }
+        }
+        diceesData.data = data;
+        console.log(data);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
+     * Display a specified skin for a specific dice.
+     * @name displaySkin
+     * @method
+     * @param {number} number id of the skin you want to display
+     * @param {number} id id of the dice you want to modify, starting from 0
+     * @returns {Promise}
+     */
+    Dicees.displaySkinById = function(number, id){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('displaySkinById', number, id);
+      }
+      else{
+        let data = diceesData.data.slice();
+        if(data[id].activeSkin !== number){
+          data[id].skins.set(data[id].activeSkin, copy(data[id].faces));
+          if(data[id].skins.has(number)){
+            data[id].faces = data[id].skins.get(number);
+          }
+          else{
+            data[id].faces = copy(facesInit);
+          }
+          data[id].activeSkin = number;
+          console.log(`Skin of dice ${id} has been updated to skin ${number}`);
+        }
+        diceesData.data = data;
+        console.log(data);
         return new Promise(resolve => resolve(0));
       }
     }
