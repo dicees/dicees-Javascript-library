@@ -574,13 +574,13 @@
      * Once they have been rolled they will their value back.<br/>
      * You can choose specifically which dice to roll.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
-     * @name rollDiceesById
+     * @name rollDiceesByIds
      * @method
      * @param {Array<number>} diceIdArray contains the ids of the dice you want to roll/reroll
      * @returns {Promise<Array<{id: number, value: number}>>} Array of Json. Each Json stands for a dice.<br/>
      * Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).
      */
-    Dicees.rollDiceesById = function(diceIdArray){
+    Dicees.rollDiceesByIds = function(diceIdArray){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
         return window.flutter_inappwebview.callHandler('rollDiceesById', diceIdArray);
       }
