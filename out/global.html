@@ -205,7 +205,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line286">line 286</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line310">line 310</a>
     </li></ul></dd>
     
 
@@ -383,7 +383,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line303">line 303</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line327">line 327</a>
     </li></ul></dd>
     
 
@@ -489,7 +489,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line322">line 322</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line346">line 346</a>
     </li></ul></dd>
     
 
@@ -543,7 +543,7 @@
     
 
     
-    <h4 class="name" id="changeDiceesColor"><span class="type-signature"></span>changeDiceesColor<span class="signature">(color, number)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="changeDiceesColor"><span class="type-signature"></span>changeDiceesColor<span class="signature">(color, number, skinNumber<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -575,7 +575,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -600,7 +604,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">hex color code of the color you want to apply (without '#')</td>
@@ -623,10 +639,61 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">number of dices that will be changed</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">id of the skin you want to affect, starting from 0</td>
         </tr>
 
     
@@ -667,7 +734,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line338">line 338</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line362">line 362</a>
     </li></ul></dd>
     
 
@@ -721,7 +788,7 @@
     
 
     
-    <h4 class="name" id="changeDiceesColorById"><span class="type-signature"></span>changeDiceesColorById<span class="signature">(color, diceIdArray)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="changeDiceesColorById"><span class="type-signature"></span>changeDiceesColorById<span class="signature">(color, id, skinNumber<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -753,7 +820,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -778,7 +849,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">hex color code of the color you want to apply (without '#')</td>
@@ -788,23 +871,74 @@
 
         <tr>
             
-                <td class="name"><code>diceIdArray</code></td>
+                <td class="name"><code>id</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type">number</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">ids of the dices you want to change the color</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">id of the dice you want to modify, starting from 0</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">id of the skin you want to affect, starting from 0</td>
         </tr>
 
     
@@ -845,7 +979,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line376">line 376</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line423">line 423</a>
     </li></ul></dd>
     
 
@@ -899,7 +1033,7 @@
     
 
     
-    <h4 class="name" id="changeDiceesFaceColor"><span class="type-signature"></span>changeDiceesFaceColor<span class="signature">(color, id, face)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="changeDiceesFaceColor"><span class="type-signature"></span>changeDiceesFaceColor<span class="signature">(color, id, face, skinNumber<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -931,7 +1065,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -956,7 +1094,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">hex color code of the color you want to apply (without '#')</td>
@@ -979,7 +1129,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">id of the dice you want to modify, starting from 0</td>
@@ -1002,10 +1164,61 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">face you want to change, it must be a number between 1 and 6</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">id of the skin you want to affect, starting from 0</td>
         </tr>
 
     
@@ -1046,7 +1259,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line420">line 420</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line482">line 482</a>
     </li></ul></dd>
     
 
@@ -1100,7 +1313,7 @@
     
 
     
-    <h4 class="name" id="displayClassicalDice"><span class="type-signature"></span>displayClassicalDice<span class="signature">(color, id)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="displayClassicalDice"><span class="type-signature"></span>displayClassicalDice<span class="signature">(color, id, skinNumber<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -1132,7 +1345,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -1157,7 +1374,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">hex color code of the color you want to apply (without '#')</td>
@@ -1180,10 +1409,61 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">id of the dice you want to modify, starting from 0</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">id of the skin you want to affect, starting from 0</td>
         </tr>
 
     
@@ -1224,7 +1504,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line462">line 462</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line603">line 603</a>
     </li></ul></dd>
     
 
@@ -1278,7 +1558,7 @@
     
 
     
-    <h4 class="name" id="displaySkin"><span class="type-signature"></span>displaySkin<span class="signature">(number)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="displaySkin"><span class="type-signature"></span>displaySkin<span class="signature">(skinNumber)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -1322,7 +1602,7 @@
 
         <tr>
             
-                <td class="name"><code>number</code></td>
+                <td class="name"><code>skinNumber</code></td>
             
 
             <td class="type">
@@ -1338,7 +1618,7 @@
 
             
 
-            <td class="description last">id of the skin you want to display</td>
+            <td class="description last">id of the skin you want to display, starting from 0</td>
         </tr>
 
     
@@ -1379,7 +1659,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line491">line 491</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line646">line 646</a>
     </li></ul></dd>
     
 
@@ -1433,7 +1713,7 @@
     
 
     
-    <h4 class="name" id="displaySkin"><span class="type-signature"></span>displaySkin<span class="signature">(number, id)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="displaySkinById"><span class="type-signature"></span>displaySkinById<span class="signature">(skinNumber)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -1441,7 +1721,7 @@
 
 
 <div class="description">
-    Display a specified skin for a specific dice.
+    Clear a specified skin for all dice.
 </div>
 
 
@@ -1477,7 +1757,7 @@
 
         <tr>
             
-                <td class="name"><code>number</code></td>
+                <td class="name"><code>skinNumber</code></td>
             
 
             <td class="type">
@@ -1493,7 +1773,162 @@
 
             
 
-            <td class="description last">id of the skin you want to display</td>
+            <td class="description last">id of the skin you want to display, starting from 0</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line549">line 549</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="displaySkinById"><span class="type-signature"></span>displaySkinById<span class="signature">(skinNumber, id)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Clear a specified skin of a specific dice.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">id of the skin you want to display, starting from 0</td>
         </tr>
 
     
@@ -1557,7 +1992,185 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line524">line 524</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line577">line 577</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="displaySkinById"><span class="type-signature"></span>displaySkinById<span class="signature">(skinNumber, id)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Display a specified skin for a specific dice.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">id of the skin you want to display, starting from 0</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">id of the dice you want to modify, starting from 0</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line678">line 678</a>
     </li></ul></dd>
     
 
@@ -1663,7 +2276,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line555">line 555</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line709">line 709</a>
     </li></ul></dd>
     
 
@@ -1721,7 +2334,7 @@
     
 
     
-    <h4 class="name" id="getFaceColors"><span class="type-signature"></span>getFaceColors<span class="signature">(id, faceNumber)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Array.&lt;string>>>}</span></h4>
+    <h4 class="name" id="getFaceColors"><span class="type-signature"></span>getFaceColors<span class="signature">(id, faceNumber, skinNumber<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Array.&lt;string>>>}</span></h4>
     
 
     
@@ -1753,7 +2366,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -1778,7 +2395,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">id of the dice you want to access, starting from 0</td>
@@ -1801,10 +2430,61 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">face you want to access, it must be a number between 1 and 6</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">id of the skin you want to get, starting from 0</td>
         </tr>
 
     
@@ -1845,7 +2525,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line570">line 570</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line724">line 724</a>
     </li></ul></dd>
     
 
@@ -1955,7 +2635,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line589">line 589</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line753">line 753</a>
     </li></ul></dd>
     
 
@@ -2114,7 +2794,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line604">line 604</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line768">line 768</a>
     </li></ul></dd>
     
 
@@ -2224,7 +2904,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line692">line 692</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line856">line 856</a>
     </li></ul></dd>
     
 
@@ -2383,7 +3063,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line643">line 643</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line807">line 807</a>
     </li></ul></dd>
     
 
@@ -2441,7 +3121,7 @@
     
 
     
-    <h4 class="name" id="setLedColor"><span class="type-signature"></span>setLedColor<span class="signature">(color, id, face, column, line)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="setLedColor"><span class="type-signature"></span>setLedColor<span class="signature">(color, id, face, column, line, skinNumber<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
     
 
     
@@ -2473,7 +3153,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2498,7 +3182,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">hex color code of the color you want to apply (without '#')</td>
@@ -2521,7 +3217,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">id of the dice you want to modify, starting from 0</td>
@@ -2544,7 +3252,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">face you want to change, it must be a number between 1 and 6</td>
@@ -2567,7 +3287,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">x coordoninates of the Led you want to change, starting from 0</td>
@@ -2590,10 +3322,61 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">y coordoninates of the Led you want to change, starting from 0</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skinNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">id of the skin you want to affect, starting from 0</td>
         </tr>
 
     
@@ -2634,7 +3417,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line764">line 764</a>
+        <a href="dicees-dev.js.html">dicees-dev.js</a>, <a href="dicees-dev.js.html#line928">line 928</a>
     </li></ul></dd>
     
 
@@ -2698,13 +3481,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#displaySkinById">displaySkinById</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue May 12 2020 17:57:30 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 13 2020 15:48:03 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>
