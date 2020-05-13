@@ -6,7 +6,10 @@ $(() => {
     await Dicees.displaySkin(1);
   })
   $('#changeColor').click(async () => {
-    await Dicees.changeDiceesColor('ff0000', 3);
+    let number = await Dicees.getDiceesCount()
+    for(let i=0; i<number; i++){
+      await Dicees.displayClassicalDice('ff0000', i);
+    }
   })
   $('#displayById').click(async () => {
     await Dicees.displaySkinById(3, 2);
