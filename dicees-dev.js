@@ -189,6 +189,30 @@
     }
   }
 
+  function generateEmptyFace(){
+    let array = [];
+    for(let i=0; i<5; i++){
+      let innerArray = [];
+      for(let j=0; j<5; j++){
+        innerArray.push("#000000");
+      }
+      array.push(innerArray);
+    }
+    return array;
+  }
+
+  function generateEmptyDice(){
+    let faces = [];
+    for(let i=0; i<6; i++){
+      let face = {
+        faceId: i,
+        color: generateEmptyFace()
+      }
+      faces.push(face);
+    }
+    return faces;
+  }
+
   function getFakeDiceesData(){
     let dataCopy = {};
     let returnArray = Object.assign(dataCopy, diceesData);
@@ -450,11 +474,6 @@
         }
 
         diceesData.data = data;
-        //
-        let iDs = diceIdArray[0];
-        for(let i=1; i<diceIdArray.length; i++){
-          iDs += ` ${diceIdArray[i]}`;
-        }
         console.log("Dice " + id + " has been changed with the color: " + color + " (skin " + skinNumber + ")");
         return new Promise(resolve => resolve(0));
       }
@@ -528,6 +547,60 @@
     }
 
     /**
+     * Clear a specified skin for all dice.
+     * @name displaySkinById
+     * @method
+     * @param {number} skinNumber id of the skin you want to display, starting from 0
+     * @returns {Promise}
+     */
+    Dicees.clearSkin = function(skinNumber){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('clearSkin', skinNumber);
+      }
+      else{
+        let data = diceesData.data.slice();
+        let newDiceesData = data.map(e => {
+          if(e.activeSkin !== skinNumber){
+            e.skins.set(skinNumber, generateEmptyDice());
+          }
+          else{
+            e.faces = generateEmptyDice();
+          }
+          return e;
+        });
+        diceesData.data = newDiceesData;
+        console.log("All dice have been cleared on skin " + skinNumber);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
+     * Clear a specified skin of a specific dice.
+     * @name displaySkinById
+     * @method
+     * @param {number} skinNumber id of the skin you want to display, starting from 0
+     * @param {number} id id of the dice you want to modify, starting from 0
+     * @returns {Promise}
+     */
+    Dicees.clearSkinById = function(skinNumber, id){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('clearSkinById', skinNumber, id);
+      }
+      else{
+        let data = diceesData.data.slice();
+        if(data[id].activeSkin !== skinNumber){
+          data[id].skins.set(skinNumber, generateEmptyDice());
+        }
+        else{
+          data[id].faces = generateEmptyDice();
+        }
+        diceesData.data = data;
+        console.log("Dice " + id + " has been cleared on skin " + skinNumber);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
      * Change the dice display to show a classical dice with the values from 1 to 6.
      * @name displayClassicalDice
      * @method
@@ -587,7 +660,6 @@
           if(data[i].activeSkin !== skinNumber){
             data[i].skins.set(data[i].activeSkin, copy(data[i].faces));
             if(data[i].skins.has(skinNumber)){
-              console.log('fired here!');
               data[i].faces = data[i].skins.get(skinNumber);
             }
             else{
