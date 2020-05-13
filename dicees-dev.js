@@ -341,34 +341,57 @@
      * @method
      * @param {string} color hex color code of the color you want to apply (without '#')
      * @param {number} number number of dices that will be changed
+     * @param {number} [skinNumber=1] id of the skin you want to affect, starting from 0
      * @returns {Promise}
      */
-    Dicees.changeDiceesColor = function(color, number){
+    Dicees.changeDiceesColor = function(color, number, skinNumber = 1){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('changeDiceesColor', color, number);
+        return window.flutter_inappwebview.callHandler('changeDiceesColor', color, number, skinNumber);
       }
       else{
+        color = '#' + color;
         let data = diceesData.data.slice();
         let newDiceesData = data.map(e => {
-         let faces = e.faces.map(f => {
-           let colorF = f.color.map(g => {
-             g = g.map(h => {
-               if(h !== '#000000'){
-                 h = color;
-               }
-               return h;
-             })
-             return g;
-           })
-           f.color = colorF;
-           return f;
-         })
-         e.faces = faces;
-         return e;
+          if(e.activeSkin !== skinNumber){
+            if(!e.skins.has(skinNumber)){
+              e.skins.set(skinNumber, copy(facesInit));
+            }
+            let faces = e.skins.get(skinNumber).map(f => {
+              let colorF = f.color.map(g => {
+                g = g.map(h => {
+                  if(h !== '#000000'){
+                    h = color;
+                  }
+                  return h;
+                })
+                return g;
+              })
+              f.color = colorF;
+              return f;
+            })
+            e.skins.set(skinNumber, faces);
+          }
+          else{
+            let faces = e.faces.map(f => {
+              let colorF = f.color.map(g => {
+                g = g.map(h => {
+                  if(h !== '#000000'){
+                    h = color;
+                  }
+                  return h;
+                })
+                return g;
+              })
+              f.color = colorF;
+              return f;
+            })
+            e.faces = faces;
+          }
+          return e;
         });
         diceesData.data = newDiceesData;
         console.log(diceesData);
-        console.log(number + " dice(s) have been changed with the color: " + color);
+        console.log(number + " dice(s) have been changed with the color: " + color + " (skin " + skinNumber + ")");
         return new Promise(resolve => resolve(0));
       }
     }
@@ -378,41 +401,61 @@
      * @name changeDiceesColorById
      * @method
      * @param {string} color hex color code of the color you want to apply (without '#')
-     * @param {Array<number>} diceIdArray ids of the dices you want to change the color
+     * @param {number} id id of the dice you want to modify, starting from 0
+     * @param {number} [skinNumber=1] id of the skin you want to affect, starting from 0
      * @returns {Promise}
      */
-    Dicees.changeDiceesColorById = function(color, diceIdArray){
+    Dicees.changeDiceesColorById = function(color, id, skinNumber = 1){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('changeDiceesColorById', color, diceIdArray);
+        return window.flutter_inappwebview.callHandler('changeDiceesColorById', color, id, skinNumber);
       }
       else{
+        color = '#' + color;
         let data = diceesData.data.slice();
-        for(let i=0; i<data.length; i++){
-          if(diceIdArray.includes(data[i].id)){
-            let newData = data[i].faces.map(e => {
-              let colorE = e.color.map(f => {
-                f = f.map(g => {
-                  if(g !== "#000000"){
-                    g = color;
-                  }
-                  return g;
-                })
-                return f;
-              })
-              e.color = colorE;
-              return e;
-            })
-            data[i].faces = newData;
+
+        if(data[id].activeSkin !== skinNumber){
+          if(!data[id].skins.has(skinNumber)){
+            data[id].skins.set(skinNumber, copy(facesInit));
           }
+          let newData = data[id].skins.get(skinNumber).map(e => {
+            let colorE = e.color.map(f => {
+              f = f.map(g => {
+                if(g !== "#000000"){
+                  g = color;
+                }
+                return g;
+              })
+              return f;
+            })
+            e.color = colorE;
+            return e;
+          })
+          data[id].skins.set(skinNumber, newData);
         }
+        else{
+          let newData = data[id].faces.map(e => {
+            let colorE = e.color.map(f => {
+              f = f.map(g => {
+                if(g !== "#000000"){
+                  g = color;
+                }
+                return g;
+              })
+              return f;
+            })
+            e.color = colorE;
+            return e;
+          })
+          data[id].faces = newData;
+        }
+
         diceesData.data = data;
         //
         let iDs = diceIdArray[0];
         for(let i=1; i<diceIdArray.length; i++){
           iDs += ` ${diceIdArray[i]}`;
         }
-        console.log(diceIdArray.length + " dice(s) have been changed with the color: " + color);
-        console.log("Dice changed : " + iDs);
+        console.log("Dice " + id + " has been changed with the color: " + color + " (skin " + skinNumber + ")");
         return new Promise(resolve => resolve(0));
       }
     }
@@ -424,37 +467,62 @@
      * @param {string} color hex color code of the color you want to apply (without '#')
      * @param {number} id id of the dice you want to modify, starting from 0
      * @param {number} face face you want to change, it must be a number between 1 and 6
+     * @param {number} [skinNumber=1] id of the skin you want to affect, starting from 0
      * @returns {Promise}
      */
-    Dicees.changeDiceesFaceColor = function(color, id, face){
+    Dicees.changeDiceesFaceColor = function(color, id, face, skinNumber = 1){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('changeDiceesFaceColor', color, id, face);
+        return window.flutter_inappwebview.callHandler('changeDiceesFaceColor', color, id, face, skinNumber);
       }
       else{
+        color = '#' + color;
         let data = diceesData.data.slice();
         for(let i=0; i<data.length; i++){
           if(data[i].id === id){
-            let newData = data[i].faces.map(e => {
-              if((face-1) === e.faceId){
-                let colorE = e.color.map(f => {
-                  f = f.map(g => {
-                    if(g !== "#000000"){
-                      g = color;
-                    }
-                    return g;
-                  })
-                  return f;
-                })
-                e.color = colorE;
+            if(data[i].activeSkin !== skinNumber){
+              if(!data[i].skins.has(skinNumber)){
+                data[i].skins.set(skinNumber, copy(facesInit));
               }
-              return e;
-            })
-            data[i].faces = newData;
+              let newData = data[i].skins.get(skinNumber).map(e => {
+                if((face-1) === e.faceId){
+                  let colorE = e.color.map(f => {
+                    f = f.map(g => {
+                      if(g !== "#000000"){
+                        g = color;
+                      }
+                      return g;
+                    })
+                    return f;
+                  })
+                  e.color = colorE;
+                }
+                return e;
+              })
+              data[i].skins.set(skinNumber, newData);
+            }
+            else{
+              let newData = data[i].faces.map(e => {
+                if((face-1) === e.faceId){
+                  let colorE = e.color.map(f => {
+                    f = f.map(g => {
+                      if(g !== "#000000"){
+                        g = color;
+                      }
+                      return g;
+                    })
+                    return f;
+                  })
+                  e.color = colorE;
+                }
+                return e;
+              })
+              data[i].faces = newData;
+            }
             break;
           }
         }
         diceesData.data = data;
-        console.log(`The ${face} face of the dice number ${id} has been changed with the color: ${color}`);
+        console.log(`The ${face} face of the dice number ${id} has been changed with the color: ${color} (skin ${skinNumber})`);
         return new Promise(resolve => resolve(0));
       }
     }
@@ -465,25 +533,39 @@
      * @method
      * @param {string} color hex color code of the color you want to apply (without '#')
      * @param {number} id id of the dice you want to modify, starting from 0
+     * @param {number} [skinNumber=1] id of the skin you want to affect, starting from 0
      * @returns {Promise}
      */
-    Dicees.displayClassicalDice = function(color, id){
+    Dicees.displayClassicalDice = function(color, id, skinNumber = 1){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('displayClassicalDice', color, id);
+        return window.flutter_inappwebview.callHandler('displayClassicalDice', color, id, skinNumber);
       }
       else{
+        color = '#' + color;
         let data = diceesData.data.slice();
         for(let i=0; i<data.length; i++){
           if(data[i].id === id){
-            for(let j=0; j<data[i].faces.length; j++){
-              data[i].faces[j].color = generateFace(j, color);
+            if(data[i].activeSkin !== skinNumber){
+              if(!data[i].skins.has(skinNumber)){
+                data[i].skins.set(skinNumber, copy(facesInit));
+              }
+              for(let j=0; j<data[i].skins.get(skinNumber).length; j++){
+                let newFace = data[i].skins.get(skinNumber);
+                newFace[j].color = generateFace(j, color);
+                data[i].skins.set(skinNumber, newFace);
+              }
+            }
+            else{
+              for(let j=0; j<data[i].faces.length; j++){
+                data[i].faces[j].color = generateFace(j, color);
+              }
             }
             break;
           }
         }
         diceesData.data = data;
         console.log(diceesData);
-        console.log(`Dice number ${id} now displays a classical dice. Its new color is : ${color}`);
+        console.log(`Dice number ${id} now displays a classical dice. Its new color is : ${color} (skin ${skinNumber})`);
         return new Promise(resolve => resolve(0));
       }
     }
@@ -492,27 +574,27 @@
      * Display a specified skin for all dicees.
      * @name displaySkin
      * @method
-     * @param {number} number id of the skin you want to display
+     * @param {number} skinNumber id of the skin you want to display, starting from 0
      * @returns {Promise}
      */
-    Dicees.displaySkin = function(number){
+    Dicees.displaySkin = function(skinNumber){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('displaySkin', number);
+        return window.flutter_inappwebview.callHandler('displaySkin', skinNumber);
       }
       else{
         let data = diceesData.data.slice();
         for(let i=0; i<data.length; i++){
-          if(data[i].activeSkin !== number){
+          if(data[i].activeSkin !== skinNumber){
             data[i].skins.set(data[i].activeSkin, copy(data[i].faces));
-            if(data[i].skins.has(number)){
+            if(data[i].skins.has(skinNumber)){
               console.log('fired here!');
-              data[i].faces = data[i].skins.get(number);
+              data[i].faces = data[i].skins.get(skinNumber);
             }
             else{
               data[i].faces = copy(facesInit);
             }
-            data[i].activeSkin = number;
-            console.log(`Skin of dice ${i} has been updated to skin ${number}`);
+            data[i].activeSkin = skinNumber;
+            console.log(`Skin of dice ${i} has been updated to skin ${skinNumber}`);
           }
         }
         diceesData.data = data;
@@ -523,28 +605,28 @@
 
     /**
      * Display a specified skin for a specific dice.
-     * @name displaySkin
+     * @name displaySkinById
      * @method
-     * @param {number} number id of the skin you want to display
+     * @param {number} skinNumber id of the skin you want to display, starting from 0
      * @param {number} id id of the dice you want to modify, starting from 0
      * @returns {Promise}
      */
-    Dicees.displaySkinById = function(number, id){
+    Dicees.displaySkinById = function(skinNumber, id){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('displaySkinById', number, id);
+        return window.flutter_inappwebview.callHandler('displaySkinById', skinNumber, id);
       }
       else{
         let data = diceesData.data.slice();
-        if(data[id].activeSkin !== number){
+        if(data[id].activeSkin !== skinNumber){
           data[id].skins.set(data[id].activeSkin, copy(data[id].faces));
-          if(data[id].skins.has(number)){
-            data[id].faces = data[id].skins.get(number);
+          if(data[id].skins.has(skinNumber)){
+            data[id].faces = data[id].skins.get(skinNumber);
           }
           else{
             data[id].faces = copy(facesInit);
           }
-          data[id].activeSkin = number;
-          console.log(`Skin of dice ${id} has been updated to skin ${number}`);
+          data[id].activeSkin = skinNumber;
+          console.log(`Skin of dice ${id} has been updated to skin ${skinNumber}`);
         }
         diceesData.data = data;
         console.log(data);
@@ -573,16 +655,26 @@
      * @method
      * @param {number} id id of the dice you want to access, starting from 0
      * @param {number} faceNumber face you want to access, it must be a number between 1 and 6
+     * @param {number} [skinNumber=1] id of the skin you want to get, starting from 0
      * @returns {Promise<Array<Array<string>>>} You can access any color this way: array[line][column] (line and column between 0 and 4).
      */
-    Dicees.getFaceColors = function(id, faceNumber){
+    Dicees.getFaceColors = function(id, faceNumber, skinNumber = 1){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('getFaceColors', id, faceNumber);
+        return window.flutter_inappwebview.callHandler('getFaceColors', id, faceNumber, skinNumber);
       }
       else{
         let data = diceesData.data.slice();
-        let array = data[id].faces[faceNumber-1].color;
-        return new Promise(resolve => resolve(array));
+        if(data[id].activeSkin !== skinNumber){
+          if(!data[id].skins.has(skinNumber)){
+            data[id].skins.set(skinNumber, copy(facesInit));
+          }
+          let array = data[id].skins.get(skinNumber)[faceNumber-1].color;
+          return new Promise(resolve => resolve(array));
+        }
+        else{
+          let array = data[id].faces[faceNumber-1].color;
+          return new Promise(resolve => resolve(array));
+        }
       }
     }
 
@@ -770,17 +862,31 @@
      * @param {number} face face you want to change, it must be a number between 1 and 6
      * @param {number} column x coordoninates of the Led you want to change, starting from 0
      * @param {number} line y coordoninates of the Led you want to change, starting from 0
+     * @param {number} [skinNumber=1] id of the skin you want to affect, starting from 0
      * @returns {Promise}
      */
-    Dicees.setLedColor = function(color, id, face, column, line){
+    Dicees.setLedColor = function(color, id, face, column, line, skinNumber = 1){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('setLedColor', color, id, column, line, face);
+        return window.flutter_inappwebview.callHandler('setLedColor', color, id, column, line, face, skinNumber);
       }
       else{
+        color = '#' + color;
         let data = diceesData.data.slice();
-        data[id].faces[face-1].color[line][column] = color;
-        diceesData.data = data;
-        return new Promise(resolve => resolve(0));
+        if(data[id].activeSkin !== skinNumber){
+          if(!data[id].skins.has(skinNumber)){
+            data[id].skins.set(skinNumber, copy(facesInit));
+          }
+          let newFace = data[id].skins.get(skinNumber);
+          newFace.color[line][column] = color;
+          data[i].skins.set(skinNumber, newFace);
+          diceesData.data = data;
+          return new Promise(resolve => resolve(0));
+        }
+        else{
+          data[id].faces[face-1].color[line][column] = color;
+          diceesData.data = data;
+          return new Promise(resolve => resolve(0));
+        }
       }
     }
 
