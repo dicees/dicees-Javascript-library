@@ -548,7 +548,7 @@
 
     /**
      * Clear a specified skin for all dice.
-     * @name displaySkinById
+     * @name clearSkin
      * @method
      * @param {number} skinNumber id of the skin you want to display, starting from 0
      * @returns {Promise}
@@ -576,7 +576,7 @@
 
     /**
      * Clear a specified skin of a specific dice.
-     * @name displaySkinById
+     * @name clearSkinById
      * @method
      * @param {number} skinNumber id of the skin you want to display, starting from 0
      * @param {number} id id of the dice you want to modify, starting from 0

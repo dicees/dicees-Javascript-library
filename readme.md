@@ -19,10 +19,10 @@
 <dt><a href="#changeDiceesFaceColor">changeDiceesFaceColor(color, id, face, [skinNumber])</a> ⇒ <code>Promise</code></dt>
 <dd><p>Change the color of all active leds of a specific face of a dice.</p>
 </dd>
-<dt><a href="#displaySkinById">displaySkinById(skinNumber)</a> ⇒ <code>Promise</code></dt>
+<dt><a href="#clearSkin">clearSkin(skinNumber)</a> ⇒ <code>Promise</code></dt>
 <dd><p>Clear a specified skin for all dice.</p>
 </dd>
-<dt><a href="#displaySkinById">displaySkinById(skinNumber, id)</a> ⇒ <code>Promise</code></dt>
+<dt><a href="#clearSkinById">clearSkinById(skinNumber, id)</a> ⇒ <code>Promise</code></dt>
 <dd><p>Clear a specified skin of a specific dice.</p>
 </dd>
 <dt><a href="#displayClassicalDice">displayClassicalDice(color, id, [skinNumber])</a> ⇒ <code>Promise</code></dt>
@@ -136,9 +136,9 @@ Change the color of all active leds of a specific face of a dice.
 | face | <code>number</code> |  | face you want to change, it must be a number between 1 and 6 |
 | [skinNumber] | <code>number</code> | <code>1</code> | id of the skin you want to affect, starting from 0 |
 
-<a name="displaySkinById"></a>
+<a name="clearSkin"></a>
 
-## displaySkinById(skinNumber) ⇒ <code>Promise</code>
+## clearSkin(skinNumber) ⇒ <code>Promise</code>
 Clear a specified skin for all dice.
 
 **Kind**: global function
@@ -147,9 +147,9 @@ Clear a specified skin for all dice.
 | --- | --- | --- |
 | skinNumber | <code>number</code> | id of the skin you want to display, starting from 0 |
 
-<a name="displaySkinById"></a>
+<a name="clearSkinById"></a>
 
-## displaySkinById(skinNumber, id) ⇒ <code>Promise</code>
+## clearSkinById(skinNumber, id) ⇒ <code>Promise</code>
 Clear a specified skin of a specific dice.
 
 **Kind**: global function
