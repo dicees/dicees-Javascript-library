@@ -78,7 +78,9 @@
       id: i,
       faceUp : 0,
       activeSkin: 1,
-      state : 'normal',
+      state : 3,
+      dXMode : 20,
+      lifeCounter: 20,
       skins : new Map(),
       faces: copy(facesInit)
     }
@@ -782,8 +784,9 @@
         return new Promise(resolve => {
           document.addEventListener("keydown", function launchDicees(event){
             let diceesResult = [];
+            let data = diceesData.data.slice();
             for(let i=0; i<numberOfDice; i++){
-                diceesResult[i] = getRandom1ToMax(6);
+              diceesResult[i] = data[i].state === 4 ? getRandom1ToMax(diceesData.data[i].dXMode) : getRandom1ToMax(6);
             }
             if (event.isComposing || event.keyCode === 229) {
               return;
@@ -791,9 +794,8 @@
             if(event.keyCode === 113){
               document.removeEventListener("keydown", launchDicees);
               resolve(diceesResult);
-              let data = diceesData.data.slice();
               let newData = data.map((e, i) => {
-                e.faceUp = diceesResult[i]-1;
+                e.faceUp = diceesResult[i];
                 return e;
               })
               diceesData.data = newData;
@@ -821,32 +823,33 @@
       }
       else{
         let diceesResult = [];
+        let data = diceesData.data.slice();
         for(let i=0; i<diceIdArray.length; i++){
             diceesResult[i] = {
               id : diceIdArray[i],
-              value : getRandom1ToMax(6)
+              value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
             };
         }
         return new Promise(resolve => {
-          document.addEventListener("keydown", event => {
+          document.addEventListener("keydown", function launchDiceesById(event){
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", this);
+              document.removeEventListener("keydown", launchDiceesById);
               resolve(diceesResult);
-              let data = diceesData.data.slice();
               let newData = data.map((e, i) => {
                 if(diceIdArray.includes(e.id)){
                   for(let j=0; j<diceesResult.length; j++){
                     if(diceesResult[j].id === e.id){
-                      e.faceUp = diceesResult[j].value-1;
+                      e.faceUp = diceesResult[j].value;
                     }
                   }
                 }
                 return e;
               })
               diceesData.data = newData;
+              console.log(diceesData);
             }
           });
         });
@@ -872,7 +875,7 @@
         return new Promise((resolve, reject) => {
           let dicesId = [];
           console.log('Event Listener added');
-          document.addEventListener("keydown", rollAutoDice)
+          document.addEventListener("keydown", rollAutoDice);
           document.addEventListener('dicees-cancelAutoRoll', function cancel(){
             document.removeEventListener('dicees-cancelAutoRoll', cancel);
             document.removeEventListener('keydown', rollAutoDice);
@@ -901,18 +904,15 @@
               if(event.keyCode === 113){
                 document.removeEventListener("keydown", rollAutoDice);
                 let diceesResult = [];
+                let data = diceesData.data.slice();
                 for(let i=0; i<diceesData.number; i++){
-                  diceesResult[i] = dicesId.includes(i) ? getRandom1ToMax(6) : -1;
+                  diceesResult[i] = dicesId.includes(i) ? (data[i].state === 4 ? getRandom1ToMax(data[i].dXMode) : getRandom1ToMax(6)) : -1;
                 }
                 resolve(diceesResult);
-                let data = diceesData.data.slice();
+                console.log(diceesResult);
                 let newData = data.map((e, i) => {
                   if(dicesId.includes(e.id)){
-                    for(let j=0; j<diceesResult.length; j++){
-                      if(diceesResult[j].id === e.id){
-                        e.faceUp = diceesResult[j].value-1;
-                      }
-                    }
+                    e.faceUp = diceesResult[i];
                   }
                   return e;
                 })
@@ -950,7 +950,7 @@
           }
           let newFace = data[id].skins.get(skinNumber);
           newFace.color[line][column] = color;
-          data[i].skins.set(skinNumber, newFace);
+          data[id].skins.set(skinNumber, newFace);
           diceesData.data = data;
           return new Promise(resolve => resolve(0));
         }
@@ -962,6 +962,27 @@
       }
     }
 
+    Dicees.switchModeById = function(id, modeId, initLifeOrNumberOfFace = 20){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('switchMode', initLifeOrNumberOfFace);
+      }
+      else{
+        let data = diceesData.data.slice();
+        data[id].state = modeId;
+        if(modeId === 4){
+          data[id].dXMode = initLifeOrNumberOfFace;
+          //document.removeEventListener("keydown", setLifeCounter);
+        }
+        else if(modeId === 5){
+          data[id].lifeCounter = initLifeOrNumberOfFace;
+          //document.addEventListener("keydown", setLifeCounter);
+        }
+        else{
+          //document.removeEventListener("keydown", setLifeCounter);
+        }
+        console.log(`Dice mode changed to ${modeId}`)
+      }
+    }
     return Dicees;
   }
 
