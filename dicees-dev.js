@@ -1036,6 +1036,14 @@
       }
     }
 
+    /**
+     * Change the mode of all dice.
+     * @name switchMode
+     * @method
+     * @param {number} modeId id of the new mode you want to set
+     * @param {number} [initLifeOrNumberOfFace=20] initial count for Life Counter mode or number of face for Dn mode
+     * @returns {Promise}
+     */
     Dicees.switchMode = function(modeId, initLifeOrNumberOfFace = 20){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
         return window.flutter_inappwebview.callHandler('switchMode', modeId, initLifeOrNumberOfFace);
@@ -1062,6 +1070,15 @@
       }
     }
 
+    /**
+     * Change the mode of a specific dice.
+     * @name switchModeById
+     * @method
+     * @param {number} modeId id of the new mode you want to set
+     * @param {number} id id of the dice you want to modify, starting from 0
+     * @param {number} [initLifeOrNumberOfFace=20] initial count for Life Counter mode or number of face for Dn mode
+     * @returns {Promise}
+     */
     Dicees.switchModeById = function(modeId, id, initLifeOrNumberOfFace = 20){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
         return window.flutter_inappwebview.callHandler('switchModeById', modeId, id, initLifeOrNumberOfFace);

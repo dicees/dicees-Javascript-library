@@ -28,10 +28,6 @@
         <article>
             <pre class="prettyprint source linenums"><code>(function (window){
 
-  function copy(array){
-    return JSON.parse(JSON.stringify(array));
-  }
-
   let diceesData;
   let facesInit = [
     {
@@ -106,7 +102,9 @@
       id: i,
       faceUp : 0,
       activeSkin: 1,
-      state : 'normal',
+      state : 3,
+      dXMode : 20,
+      lifeCounter: 20,
       skins : new Map(),
       faces: copy(facesInit)
     }
@@ -161,6 +159,84 @@
       'gender' : 'N'
     }
   ];
+
+  let lifeCounterHandler = new Set();
+  let lifeCounterFocus = null;
+
+  function addLifeCounter(id){
+    if(!lifeCounterHandler.has(id)){
+      lifeCounterHandler.add(id);
+    }
+    updateLifeCounter();
+  }
+
+  function removeLifeCounter(id){
+    if(lifeCounterHandler.has(id)){
+      lifeCounterHandler.delete(id);
+    }
+    updateLifeCounter();
+  }
+
+  function setLifeCounter(event){
+    if (event.isComposing || event.keyCode === 229) {
+      return;
+    }
+    lifeCounterHandler.forEach((id) => {
+      if(event.keyCode === 49 + id){
+        lifeCounterFocus = id;
+        console.log(`New Life-Counter focus: dice ${id}`);
+        return;
+      }
+    })
+    if(lifeCounterFocus !== null){
+      let data = diceesData.data.slice();
+      if(event.keyCode === 98){
+        data[lifeCounterFocus].lifeCounter -= 10;
+        if(data[lifeCounterFocus].lifeCounter &lt; 0)
+          data[lifeCounterFocus].lifeCounter = 0;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      if(event.keyCode === 100){
+        --data[lifeCounterFocus].lifeCounter;
+        if(data[lifeCounterFocus].lifeCounter &lt; 0)
+          data[lifeCounterFocus].lifeCounter = 0;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      if(event.keyCode === 102){
+        ++data[lifeCounterFocus].lifeCounter;
+        if(data[lifeCounterFocus].lifeCounter > 100)
+          data[lifeCounterFocus].lifeCounter = 100;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      if(event.keyCode === 104){
+        data[lifeCounterFocus].lifeCounter += 10;
+        if(data[lifeCounterFocus].lifeCounter > 100)
+          data[lifeCounterFocus].lifeCounter = 100;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      diceesData.data = data;
+    }
+  }
+
+  function updateLifeCounter(){
+    document.removeEventListener("keydown", setLifeCounter);
+    if(lifeCounterHandler.size === 0){
+      if(lifeCounterFocus !== null){
+        console.log(`Dice ${lifeCounterFocus} no longer in life-counter mode, resetting focus!`);
+      }
+      lifeCounterFocus = null;
+      return;
+    }
+    if(!lifeCounterHandler.has(lifeCounterFocus) &amp;&amp; lifeCounterFocus !== null){
+      console.log(`Dice ${lifeCounterFocus} no longer in life-counter mode, resetting focus!`);
+      lifeCounterFocus = null;
+    }
+    document.addEventListener("keydown", setLifeCounter);
+  }
+
+  function copy(array){
+    return JSON.parse(JSON.stringify(array));
+  }
 
   function generateFace(number, color){
     switch(number){
@@ -576,7 +652,7 @@
 
     /**
      * Clear a specified skin for all dice.
-     * @name displaySkinById
+     * @name clearSkin
      * @method
      * @param {number} skinNumber id of the skin you want to display, starting from 0
      * @returns {Promise}
@@ -604,7 +680,7 @@
 
     /**
      * Clear a specified skin of a specific dice.
-     * @name displaySkinById
+     * @name clearSkinById
      * @method
      * @param {number} skinNumber id of the skin you want to display, starting from 0
      * @param {number} id id of the dice you want to modify, starting from 0
@@ -810,8 +886,9 @@
         return new Promise(resolve => {
           document.addEventListener("keydown", function launchDicees(event){
             let diceesResult = [];
+            let data = diceesData.data.slice();
             for(let i=0; i&lt;numberOfDice; i++){
-                diceesResult[i] = getRandom1ToMax(6);
+              diceesResult[i] = data[i].state === 4 ? getRandom1ToMax(diceesData.data[i].dXMode) : getRandom1ToMax(6);
             }
             if (event.isComposing || event.keyCode === 229) {
               return;
@@ -819,9 +896,8 @@
             if(event.keyCode === 113){
               document.removeEventListener("keydown", launchDicees);
               resolve(diceesResult);
-              let data = diceesData.data.slice();
               let newData = data.map((e, i) => {
-                e.faceUp = diceesResult[i]-1;
+                e.faceUp = diceesResult[i];
                 return e;
               })
               diceesData.data = newData;
@@ -849,32 +925,33 @@
       }
       else{
         let diceesResult = [];
+        let data = diceesData.data.slice();
         for(let i=0; i&lt;diceIdArray.length; i++){
             diceesResult[i] = {
               id : diceIdArray[i],
-              value : getRandom1ToMax(6)
+              value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
             };
         }
         return new Promise(resolve => {
-          document.addEventListener("keydown", event => {
+          document.addEventListener("keydown", function launchDiceesById(event){
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", this);
+              document.removeEventListener("keydown", launchDiceesById);
               resolve(diceesResult);
-              let data = diceesData.data.slice();
               let newData = data.map((e, i) => {
                 if(diceIdArray.includes(e.id)){
                   for(let j=0; j&lt;diceesResult.length; j++){
                     if(diceesResult[j].id === e.id){
-                      e.faceUp = diceesResult[j].value-1;
+                      e.faceUp = diceesResult[j].value;
                     }
                   }
                 }
                 return e;
               })
               diceesData.data = newData;
+              console.log(diceesData);
             }
           });
         });
@@ -900,7 +977,7 @@
         return new Promise((resolve, reject) => {
           let dicesId = [];
           console.log('Event Listener added');
-          document.addEventListener("keydown", rollAutoDice)
+          document.addEventListener("keydown", rollAutoDice);
           document.addEventListener('dicees-cancelAutoRoll', function cancel(){
             document.removeEventListener('dicees-cancelAutoRoll', cancel);
             document.removeEventListener('keydown', rollAutoDice);
@@ -929,18 +1006,15 @@
               if(event.keyCode === 113){
                 document.removeEventListener("keydown", rollAutoDice);
                 let diceesResult = [];
+                let data = diceesData.data.slice();
                 for(let i=0; i&lt;diceesData.number; i++){
-                  diceesResult[i] = dicesId.includes(i) ? getRandom1ToMax(6) : -1;
+                  diceesResult[i] = dicesId.includes(i) ? (data[i].state === 4 ? getRandom1ToMax(data[i].dXMode) : getRandom1ToMax(6)) : -1;
                 }
                 resolve(diceesResult);
-                let data = diceesData.data.slice();
+                console.log(diceesResult);
                 let newData = data.map((e, i) => {
                   if(dicesId.includes(e.id)){
-                    for(let j=0; j&lt;diceesResult.length; j++){
-                      if(diceesResult[j].id === e.id){
-                        e.faceUp = diceesResult[j].value-1;
-                      }
-                    }
+                    e.faceUp = diceesResult[i];
                   }
                   return e;
                 })
@@ -978,7 +1052,7 @@
           }
           let newFace = data[id].skins.get(skinNumber);
           newFace.color[line][column] = color;
-          data[i].skins.set(skinNumber, newFace);
+          data[id].skins.set(skinNumber, newFace);
           diceesData.data = data;
           return new Promise(resolve => resolve(0));
         }
@@ -990,6 +1064,71 @@
       }
     }
 
+    /**
+     * Change the mode of all dice.
+     * @name switchMode
+     * @method
+     * @param {number} modeId id of the new mode you want to set
+     * @param {number} [initLifeOrNumberOfFace=20] initial count for Life Counter mode or number of face for Dn mode
+     * @returns {Promise}
+     */
+    Dicees.switchMode = function(modeId, initLifeOrNumberOfFace = 20){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('switchMode', modeId, initLifeOrNumberOfFace);
+      }
+      else{
+        let data = diceesData.data.slice();
+        let newDiceesData = data.map((e, i) => {
+          data[i].state = modeId;
+          if(modeId === 4){
+            e.dXMode = initLifeOrNumberOfFace;
+            removeLifeCounter(i);
+          }
+          else if(modeId === 5){
+            e.lifeCounter = initLifeOrNumberOfFace;
+            addLifeCounter(i);
+          }
+          else{
+            removeLifeCounter(i);
+          }
+          console.log(`Dice ${i}: mode changed to ${modeId}`);
+          return e;
+        })
+        diceesData.data = newDiceesData;
+      }
+    }
+
+    /**
+     * Change the mode of a specific dice.
+     * @name switchModeById
+     * @method
+     * @param {number} modeId id of the new mode you want to set
+     * @param {number} id id of the dice you want to modify, starting from 0
+     * @param {number} [initLifeOrNumberOfFace=20] initial count for Life Counter mode or number of face for Dn mode
+     * @returns {Promise}
+     */
+    Dicees.switchModeById = function(modeId, id, initLifeOrNumberOfFace = 20){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('switchModeById', modeId, id, initLifeOrNumberOfFace);
+      }
+      else{
+        let data = diceesData.data.slice();
+        data[id].state = modeId;
+        if(modeId === 4){
+          data[id].dXMode = initLifeOrNumberOfFace;
+          removeLifeCounter(id);
+        }
+        else if(modeId === 5){
+          data[id].lifeCounter = initLifeOrNumberOfFace;
+          addLifeCounter(id);
+        }
+        else{
+          removeLifeCounter(id);
+        }
+        diceesData.data = data;
+        console.log(`Dice ${id}: mode changed to ${modeId}`);
+      }
+    }
     return Dicees;
   }
 
@@ -1008,13 +1147,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#displaySkinById">displaySkinById</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#clearSkin">clearSkin</a></li><li><a href="global.html#clearSkinById">clearSkinById</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#displaySkinById">displaySkinById</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li><li><a href="global.html#switchMode">switchMode</a></li><li><a href="global.html#switchModeById">switchModeById</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 13 2020 15:48:03 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Fri May 15 2020 11:40:04 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>

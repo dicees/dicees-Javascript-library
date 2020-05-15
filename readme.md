@@ -65,6 +65,12 @@ If a dice has not been picked-up, it will not be thrown.<br/></p>
 <dt><a href="#setLedColor">setLedColor(color, id, face, column, line, [skinNumber])</a> ⇒ <code>Promise</code></dt>
 <dd><p>Change the color of a specific LED of a specific dice.</p>
 </dd>
+<dt><a href="#switchMode">switchMode(modeId, [initLifeOrNumberOfFace])</a> ⇒ <code>Promise</code></dt>
+<dd><p>Change the mode of all dice.</p>
+</dd>
+<dt><a href="#switchModeById">switchModeById(modeId, id, [initLifeOrNumberOfFace])</a> ⇒ <code>Promise</code></dt>
+<dd><p>Change the mode of a specific dice.</p>
+</dd>
 </dl>
 
 <a name="blink"></a>
@@ -280,3 +286,28 @@ Change the color of a specific LED of a specific dice.
 | column | <code>number</code> |  | x coordoninates of the Led you want to change, starting from 0 |
 | line | <code>number</code> |  | y coordoninates of the Led you want to change, starting from 0 |
 | [skinNumber] | <code>number</code> | <code>1</code> | id of the skin you want to affect, starting from 0 |
+
+<a name="switchMode"></a>
+
+## switchMode(modeId, [initLifeOrNumberOfFace]) ⇒ <code>Promise</code>
+Change the mode of all dice.
+
+**Kind**: global function
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| modeId | <code>number</code> |  | id of the new mode you want to set |
+| [initLifeOrNumberOfFace] | <code>number</code> | <code>20</code> | initial count for Life Counter mode or number of face for Dn mode |
+
+<a name="switchModeById"></a>
+
+## switchModeById(modeId, id, [initLifeOrNumberOfFace]) ⇒ <code>Promise</code>
+Change the mode of a specific dice.
+
+**Kind**: global function
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| modeId | <code>number</code> |  | id of the new mode you want to set |
+| id | <code>number</code> |  | id of the dice you want to modify, starting from 0 |
+| [initLifeOrNumberOfFace] | <code>number</code> | <code>20</code> | initial count for Life Counter mode or number of face for Dn mode |
