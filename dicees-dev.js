@@ -1,9 +1,5 @@
 (function (window){
 
-  function copy(array){
-    return JSON.parse(JSON.stringify(array));
-  }
-
   let diceesData;
   let facesInit = [
     {
@@ -135,6 +131,84 @@
       'gender' : 'N'
     }
   ];
+
+  let lifeCounterHandler = new Set();
+  let lifeCounterFocus = null;
+
+  function addLifeCounter(id){
+    if(!lifeCounterHandler.has(id)){
+      lifeCounterHandler.add(id);
+    }
+    updateLifeCounter();
+  }
+
+  function removeLifeCounter(id){
+    if(lifeCounterHandler.has(id)){
+      lifeCounterHandler.delete(id);
+    }
+    updateLifeCounter();
+  }
+
+  function setLifeCounter(event){
+    if (event.isComposing || event.keyCode === 229) {
+      return;
+    }
+    lifeCounterHandler.forEach((id) => {
+      if(event.keyCode === 49 + id){
+        lifeCounterFocus = id;
+        console.log(`New Life-Counter focus: dice ${id}`);
+        return;
+      }
+    })
+    if(lifeCounterFocus !== null){
+      let data = diceesData.data.slice();
+      if(event.keyCode === 98){
+        data[lifeCounterFocus].lifeCounter -= 10;
+        if(data[lifeCounterFocus].lifeCounter < 0)
+          data[lifeCounterFocus].lifeCounter = 0;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      if(event.keyCode === 100){
+        --data[lifeCounterFocus].lifeCounter;
+        if(data[lifeCounterFocus].lifeCounter < 0)
+          data[lifeCounterFocus].lifeCounter = 0;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      if(event.keyCode === 102){
+        ++data[lifeCounterFocus].lifeCounter;
+        if(data[lifeCounterFocus].lifeCounter > 100)
+          data[lifeCounterFocus].lifeCounter = 100;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      if(event.keyCode === 104){
+        data[lifeCounterFocus].lifeCounter += 10;
+        if(data[lifeCounterFocus].lifeCounter > 100)
+          data[lifeCounterFocus].lifeCounter = 100;
+        console.log(`Dice ${lifeCounterFocus} life state: ${data[lifeCounterFocus].lifeCounter}`);
+      }
+      diceesData.data = data;
+    }
+  }
+
+  function updateLifeCounter(){
+    document.removeEventListener("keydown", setLifeCounter);
+    if(lifeCounterHandler.size === 0){
+      if(lifeCounterFocus !== null){
+        console.log(`Dice ${lifeCounterFocus} no longer in life-counter mode, resetting focus!`);
+      }
+      lifeCounterFocus = null;
+      return;
+    }
+    if(!lifeCounterHandler.has(lifeCounterFocus) && lifeCounterFocus !== null){
+      console.log(`Dice ${lifeCounterFocus} no longer in life-counter mode, resetting focus!`);
+      lifeCounterFocus = null;
+    }
+    document.addEventListener("keydown", setLifeCounter);
+  }
+
+  function copy(array){
+    return JSON.parse(JSON.stringify(array));
+  }
 
   function generateFace(number, color){
     switch(number){
@@ -962,25 +1036,52 @@
       }
     }
 
-    Dicees.switchModeById = function(id, modeId, initLifeOrNumberOfFace = 20){
+    Dicees.switchMode = function(modeId, initLifeOrNumberOfFace = 20){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('switchMode', initLifeOrNumberOfFace);
+        return window.flutter_inappwebview.callHandler('switchMode', modeId, initLifeOrNumberOfFace);
+      }
+      else{
+        let data = diceesData.data.slice();
+        let newDiceesData = data.map((e, i) => {
+          data[i].state = modeId;
+          if(modeId === 4){
+            e.dXMode = initLifeOrNumberOfFace;
+            removeLifeCounter(i);
+          }
+          else if(modeId === 5){
+            e.lifeCounter = initLifeOrNumberOfFace;
+            addLifeCounter(i);
+          }
+          else{
+            removeLifeCounter(i);
+          }
+          console.log(`Dice ${i}: mode changed to ${modeId}`);
+          return e;
+        })
+        diceesData.data = newDiceesData;
+      }
+    }
+
+    Dicees.switchModeById = function(modeId, id, initLifeOrNumberOfFace = 20){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('switchModeById', modeId, id, initLifeOrNumberOfFace);
       }
       else{
         let data = diceesData.data.slice();
         data[id].state = modeId;
         if(modeId === 4){
           data[id].dXMode = initLifeOrNumberOfFace;
-          //document.removeEventListener("keydown", setLifeCounter);
+          removeLifeCounter(id);
         }
         else if(modeId === 5){
           data[id].lifeCounter = initLifeOrNumberOfFace;
-          //document.addEventListener("keydown", setLifeCounter);
+          addLifeCounter(id);
         }
         else{
-          //document.removeEventListener("keydown", setLifeCounter);
+          removeLifeCounter(id);
         }
-        console.log(`Dice mode changed to ${modeId}`)
+        diceesData.data = data;
+        console.log(`Dice ${id}: mode changed to ${modeId}`);
       }
     }
     return Dicees;
