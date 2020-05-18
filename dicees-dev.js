@@ -992,7 +992,7 @@
      * Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
      * After the roll the result of these dice is returned.<br/>
      * If the query is canceled, all the values returned will be -1<br/>
-     * In developpment mode, you can use your A, Z, E, R and T key to simulate a pick-up.<br/>
+     * In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.<br/>
      * If a dice has not been picked-up, it will not be thrown.<br/>
      * @name rollDiceesAutoDetect
@@ -1014,43 +1014,33 @@
             resolve([-1, -1, -1, -1, -1]);
           });
           function rollAutoDice(event){
+            event.preventDefault();
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
-            if(event.keyCode === 65 || event.keyCode === 90 || event.keyCode === 69 || event.keyCode === 82 || event.keyCode === 84 || event.keyCode === 113){
-              if(event.keyCode === 65 && !dicesId.includes(0)){
-                dicesId.push(0);
+            if(event.keyCode > 48 && event.keyCode < 54){
+              if(!dicesId.includes(event.keyCode-49)){
+                dicesId.push(event.keyCode-49);
+                console.log(`${event.keyCode-49} picked!`)
               }
-              if(event.keyCode === 90 && !dicesId.includes(1)){
-                dicesId.push(1);
+            }
+            if(event.keyCode === 113){
+              document.removeEventListener("keydown", rollAutoDice);
+              let diceesResult = [];
+              let data = diceesData.data.slice();
+              for(let i=0; i<diceesData.number; i++){
+                diceesResult[i] = dicesId.includes(i) ? (data[i].state === 4 ? getRandom1ToMax(data[i].dXMode) : getRandom1ToMax(6)) : -1;
               }
-              if(event.keyCode === 69 && !dicesId.includes(2)){
-                dicesId.push(2);
-              }
-              if(event.keyCode === 82 && !dicesId.includes(3)){
-                dicesId.push(3);
-              }
-              if(event.keyCode === 84 && !dicesId.includes(4)){
-                dicesId.push(4);
-              }
-              if(event.keyCode === 113){
-                document.removeEventListener("keydown", rollAutoDice);
-                let diceesResult = [];
-                let data = diceesData.data.slice();
-                for(let i=0; i<diceesData.number; i++){
-                  diceesResult[i] = dicesId.includes(i) ? (data[i].state === 4 ? getRandom1ToMax(data[i].dXMode) : getRandom1ToMax(6)) : -1;
+              resolve(diceesResult);
+              console.log(diceesResult);
+              let newData = data.map((e, i) => {
+                if(dicesId.includes(e.id)){
+                  e.faceUp = diceesResult[i];
                 }
-                resolve(diceesResult);
-                console.log(diceesResult);
-                let newData = data.map((e, i) => {
-                  if(dicesId.includes(e.id)){
-                    e.faceUp = diceesResult[i];
-                  }
-                  return e;
-                })
-                diceesData.data = newData;
-                console.log(diceesData);
-              }
+                return e;
+              })
+              diceesData.data = newData;
+              console.log(diceesData);
             }
           }
         })
