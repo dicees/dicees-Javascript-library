@@ -1048,6 +1048,74 @@
     }
 
     /**
+     * Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
+     * After the roll the result of these dice is returned.<br/>
+     * If the query is canceled, all the values returned will be -1<br/>
+     * In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
+     * In developpment mode, you can use your F2 key to simulate a throw.<br/>
+     * If a dice has not been picked-up, it will not be thrown.<br/>
+     * @name rollDiceesAutoDetectByIds
+     * @method
+     * @param {Array<number>} diceIdArray contains the ids of the dice you want to detect if they are thown or not
+     * @returns {Promise<Array<{id: number, value: number}>>} Array of Json. Each Json stands for a dice.<br/>
+     * Id is the id of the dice (starting from 0) and value is the result of the dice (-1 to 6, 0 meaning the dice is broken and -1 meaning the dice has not been thrown).
+     */
+    Dicees.rollDiceesAutoDetectByIds = function(diceIdArray){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('rollDiceesAutoDetectByIds', diceIdArray);
+      }
+      else{
+        return new Promise((resolve, reject) => {
+          let dicesId = [];
+          console.log('Event Listener added');
+          document.addEventListener("keydown", rollAutoDiceById);
+          document.addEventListener('dicees-cancelAutoRoll', function cancel(){
+            document.removeEventListener('dicees-cancelAutoRoll', cancel);
+            document.removeEventListener('keydown', rollAutoDiceById);
+            let diceesResults = [];
+            for(let i=0; i<diceIdArray.length; i++){
+              diceesResults[i] = {
+                id: diceIdArray[i],
+                value: -1
+              }
+            }
+            resolve(diceesResults);
+          });
+          function rollAutoDiceById(event){
+            event.preventDefault();
+            if (event.isComposing || event.keyCode === 229) {
+              return;
+            }
+            if(event.keyCode > 48 && event.keyCode < 54){
+              if(!dicesId.includes(event.keyCode-49) && diceIdArray.includes(event.keyCode-49)){
+                dicesId.push(event.keyCode-49);
+                console.log(`${event.keyCode-49} picked!`)
+              }
+            }
+            if(event.keyCode === 113){
+              document.removeEventListener("keydown", rollAutoDiceById);
+              let diceesResult = [];
+              let data = diceesData.data.slice();
+              for(let i=0; i<diceIdArray.length; i++){
+                if(dicesId.includes(diceIdArray[i])){
+                  diceesResult.push({
+                    id : diceIdArray[i],
+                    value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
+                  });
+                  data[diceIdArray[i]].faceUp = diceesResult[diceesResult.length-1].value;
+                }
+              }
+              resolve(diceesResult);
+              console.log(diceesResult);
+              diceesData.data = data;
+              console.log(diceesData);
+            }
+          }
+        })
+      }
+    }
+
+    /**
      * Change the color of a specific LED of a specific dice.
      * @name setLedColor
      * @method
