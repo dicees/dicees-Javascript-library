@@ -83,6 +83,8 @@
   }
 
   let cancelAutoRoll = new Event('dicees-cancelAutoRoll');
+  let cancelRollDicees = new Event('dicees-cancelRollDicees');
+  let cancelPickUp = new Event('dicees-cancelPickUp');
 
   const fakePlayers = [
     {
@@ -420,6 +422,40 @@
     }
 
     /**
+     * Send a message to the dice to stop waiting for a pick up.
+     * @name cancelPickUp
+     * @method
+     * @returns {Promise}
+     */
+    Dicees.cancelPickUp = function(){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('cancelPickUp');
+      }
+      else{
+        document.dispatchEvent(cancelPickUp);
+        console.log("Pick up cancelled!");
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
+     * Send a message to the dice to stop waiting for a roll.
+     * @name cancelRollDicees
+     * @method
+     * @returns {Promise}
+     */
+    Dicees.cancelRollDicees = function(){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('cancelRollDicees');
+      }
+      else{
+        document.dispatchEvent(cancelRollDicees);
+        console.log("Roll cancelled!");
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
      * Send a message to the dice to stop trying to detect a reroll.
      * @name cancelRollDiceesAutoDetect
      * @method
@@ -431,6 +467,7 @@
       }
       else{
         document.dispatchEvent(cancelAutoRoll);
+        console.log("Auto-detection cancelled!");
         return new Promise(resolve => resolve(0));
       }
     }
@@ -855,16 +892,24 @@
       }
       else{
         return new Promise(resolve => {
-          document.addEventListener("keydown", function pickUpEvent(event){
+          document.addEventListener("keydown", _pickUpEvent);
+          document.addEventListener("dicees-cancelPickUp", _cancelPickUp);
+          function _cancelPickUp(){
+            document.removeEventListener("keydown", _pickUpEvent);
+            document.removeEventListener("dicees-cancelPickUp", _cancelPickUp);
+            resolve(false);
+          }
+          function _pickUpEvent(event){
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 114){
-              document.removeEventListener("keydown", pickUpEvent);
+              document.removeEventListener("keydown", _pickUpEvent);
+              document.removeEventListener("dicees-cancelPickUp", _cancelPickUp);
               resolve(true);
               console.log('All dice have been picked up!');
             }
-          });
+          }
         });
       }
     }
@@ -884,18 +929,26 @@
       }
       else{
         return new Promise(resolve => {
-          document.addEventListener("keydown", function pickUpEvent(event){
+          document.addEventListener("keydown", _pickUpEvent);
+          document.addEventListener("dicees-cancelPickUp", _cancelPickUpById);
+          function _cancelPickUpById(){
+            document.removeEventListener("keydown", _pickUpEvent);
+            document.removeEventListener("dicees-cancelPickUp", _cancelPickUpById);
+            resolve(false);
+          }
+          function _pickUpEvent(event){
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 114){
-              document.removeEventListener("keydown", pickUpEvent);
+              document.removeEventListener("keydown", _pickUpEvent);
+              document.removeEventListener("dicees-cancelPickUp", _cancelPickUpById);
               resolve(true);
               for(let i=0; i<diceIdArray.length; i++){
                 console.log(`Dice ${diceIdArray[i]} has been picked up!`);
               }
             }
-          });
+          }
         });
       }
     }
@@ -914,7 +967,19 @@
       }
       else{
         return new Promise(resolve => {
-          document.addEventListener("keydown", function launchDicees(event){
+          document.addEventListener("keydown", _launchDicees);
+          document.addEventListener("dicees-cancelRollDicees", _cancelRoll);
+          function _cancelRoll(){
+            document.removeEventListener("keydown", _launchDicees);
+            document.removeEventListener("dicees-cancelRollDicees", _cancelRoll);
+            let diceesResult = [];
+            let data = diceesData.data.slice();
+            for(let i=0; i<data.length; i++){
+              diceesResult[i] = -1;
+            }
+            resolve(diceesResult);
+          }
+          function _launchDicees(event){
             let diceesResult = [];
             let data = diceesData.data.slice();
             for(let i=0; i<data.length; i++){
@@ -924,7 +989,8 @@
               return;
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", launchDicees);
+              document.removeEventListener("keydown", _launchDicees);
+              document.removeEventListener("dicees-cancelRollDicees", _cancelRoll);
               resolve(diceesResult);
               let newData = data.map((e, i) => {
                 e.faceUp = diceesResult[i];
@@ -933,7 +999,7 @@
               diceesData.data = newData;
               console.log(diceesData);
             }
-          });
+          }
         });
       }
     }
@@ -954,21 +1020,36 @@
         return window.flutter_inappwebview.callHandler('rollDiceesById', diceIdArray);
       }
       else{
-        let diceesResult = [];
-        let data = diceesData.data.slice();
-        for(let i=0; i<diceIdArray.length; i++){
-            diceesResult[i] = {
-              id : diceIdArray[i],
-              value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
-            };
-        }
         return new Promise(resolve => {
-          document.addEventListener("keydown", function launchDiceesById(event){
+          document.addEventListener("keydown", _launchDiceesById);
+          document.addEventListener("dicees-cancelRollDicees", _cancelRollById);
+          function _cancelRollById(){
+            document.removeEventListener("keydown", _launchDiceesById);
+            document.removeEventListener("dicees-cancelRollDicees", _cancelRollById);
+            let diceesResult = [];
+            for(let i=0; i<diceIdArray.length; i++){
+                diceesResult[i] = {
+                  id : diceIdArray[i],
+                  value : -1
+                };
+            }
+            resolve(diceesResult);
+          }
+          function _launchDiceesById(event){
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", launchDiceesById);
+              document.removeEventListener("dicees-cancelRollDicees", _cancelRollById);
+              document.removeEventListener("keydown", _launchDiceesById);
+              let diceesResult = [];
+              let data = diceesData.data.slice();
+              for(let i=0; i<diceIdArray.length; i++){
+                  diceesResult[i] = {
+                    id : diceIdArray[i],
+                    value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
+                  };
+              }
               resolve(diceesResult);
               let newData = data.map((e, i) => {
                 if(diceIdArray.includes(e.id)){
@@ -983,7 +1064,7 @@
               diceesData.data = newData;
               console.log(diceesData);
             }
-          });
+          }
         });
       }
     }
@@ -1007,13 +1088,14 @@
         return new Promise((resolve, reject) => {
           let dicesId = [];
           console.log('Event Listener added');
-          document.addEventListener("keydown", rollAutoDice);
-          document.addEventListener('dicees-cancelAutoRoll', function cancel(){
-            document.removeEventListener('dicees-cancelAutoRoll', cancel);
-            document.removeEventListener('keydown', rollAutoDice);
+          document.addEventListener("keydown", _rollAutoDice);
+          document.addEventListener('dicees-cancelAutoRoll', _cancelAutoDetect);
+          function _cancelAutoDetect(){
+            document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetect);
+            document.removeEventListener('keydown', _rollAutoDice);
             resolve([-1, -1, -1, -1, -1]);
-          });
-          function rollAutoDice(event){
+          }
+          function _rollAutoDice(event){
             event.preventDefault();
             if (event.isComposing || event.keyCode === 229) {
               return;
@@ -1025,7 +1107,8 @@
               }
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", rollAutoDice);
+              document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetect);
+              document.removeEventListener('keydown', _rollAutoDice);
               let diceesResult = [];
               let data = diceesData.data.slice();
               for(let i=0; i<diceesData.number; i++){
@@ -1068,10 +1151,11 @@
         return new Promise((resolve, reject) => {
           let dicesId = [];
           console.log('Event Listener added');
-          document.addEventListener("keydown", rollAutoDiceById);
-          document.addEventListener('dicees-cancelAutoRoll', function cancel(){
-            document.removeEventListener('dicees-cancelAutoRoll', cancel);
-            document.removeEventListener('keydown', rollAutoDiceById);
+          document.addEventListener("keydown", _rollAutoDiceById);
+          document.addEventListener('dicees-cancelAutoRoll', _cancelAutoDetectById);
+          function _cancelAutoDetectById(){
+            document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetectById);
+            document.removeEventListener('keydown', _cancelAutoDetectById);
             let diceesResults = [];
             for(let i=0; i<diceIdArray.length; i++){
               diceesResults[i] = {
@@ -1080,8 +1164,8 @@
               }
             }
             resolve(diceesResults);
-          });
-          function rollAutoDiceById(event){
+          }
+          function _rollAutoDiceById(event){
             event.preventDefault();
             if (event.isComposing || event.keyCode === 229) {
               return;
@@ -1093,7 +1177,8 @@
               }
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", rollAutoDiceById);
+              document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetectById);
+              document.removeEventListener('keydown', _cancelAutoDetectById);
               let diceesResult = [];
               let data = diceesData.data.slice();
               for(let i=0; i<diceIdArray.length; i++){
