@@ -842,24 +842,23 @@
     }
 
     /**
-     * Send a message to the dice for them to wait to be rolled.<br/>
+     * Send a message to all dice for them to wait to be rolled.<br/>
      * Once they have been rolled they will send their value back.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
      * @name rollDicees
      * @method
-     * @param {number} numberOfDice number of dice to roll
      * @returns {Promise<Array<number>>} Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).
      */
-    Dicees.rollDicees = function(numberOfDice){
+    Dicees.rollDicees = function(){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('rollDicees', numberOfDice);
+        return window.flutter_inappwebview.callHandler('rollDicees');
       }
       else{
         return new Promise(resolve => {
           document.addEventListener("keydown", function launchDicees(event){
             let diceesResult = [];
             let data = diceesData.data.slice();
-            for(let i=0; i<numberOfDice; i++){
+            for(let i=0; i<data.length; i++){
               diceesResult[i] = data[i].state === 4 ? getRandom1ToMax(diceesData.data[i].dXMode) : getRandom1ToMax(6);
             }
             if (event.isComposing || event.keyCode === 229) {
