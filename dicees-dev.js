@@ -842,6 +842,65 @@
     }
 
     /**
+     * Send a message to all dice for them to wait to be picked up.<br/>
+     * Once they have been rolled they will send their value back.<br/>
+     * In developpment mode, you can use your F3 key to simulate a gereral pick up.
+     * @name pickUp
+     * @method
+     * @returns {Promise<boolean>} Returns true when the dice have been picked up
+     */
+    Dicees.pickUp = function(){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('pickUp');
+      }
+      else{
+        return new Promise(resolve => {
+          document.addEventListener("keydown", function pickUpEvent(event){
+            if (event.isComposing || event.keyCode === 229) {
+              return;
+            }
+            if(event.keyCode === 114){
+              document.removeEventListener("keydown", pickUpEvent);
+              resolve(true);
+              console.log('All dice have been picked up!');
+            }
+          });
+        });
+      }
+    }
+
+    /**
+     * Send a message to specific dice for them to wait to be picked up.<br/>
+     * Once they have been rolled they will send their value back.<br/>
+     * In developpment mode, you can use your F3 key to simulate a gereral pick up.
+     * @name pickUpByIds
+     * @method
+     * @param {Array<number>} diceIdArray contains the ids of the dice you want to pick up
+     * @returns {Promise<boolean>} Returns true when the dice have been picked up
+     */
+    Dicees.pickUpByIds = function(diceIdArray){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('pickUpByIds', diceIdArray);
+      }
+      else{
+        return new Promise(resolve => {
+          document.addEventListener("keydown", function pickUpEvent(event){
+            if (event.isComposing || event.keyCode === 229) {
+              return;
+            }
+            if(event.keyCode === 114){
+              document.removeEventListener("keydown", pickUpEvent);
+              resolve(true);
+              for(let i=0; i<diceIdArray.length; i++){
+                console.log(`Dice ${diceIdArray[i]} has been picked up!`);
+              }
+            }
+          });
+        });
+      }
+    }
+
+    /**
      * Send a message to all dice for them to wait to be rolled.<br/>
      * Once they have been rolled they will send their value back.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
@@ -880,7 +939,7 @@
     }
 
     /**
-     * Send a message to the dice for them to wait to be rolled.<br/>
+     * Send a message to specific dice for them to wait to be rolled.<br/>
      * Once they have been rolled they will their value back.<br/>
      * You can choose specifically which dice to roll.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
