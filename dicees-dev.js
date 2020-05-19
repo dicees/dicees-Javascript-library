@@ -884,7 +884,8 @@
      * In developpment mode, you can use your F3 key to simulate a gereral pick up.
      * @name pickUp
      * @method
-     * @returns {Promise<boolean>} Returns true when the dice have been picked up
+     * @returns {Promise<boolean>} Returns true when the dice have been picked up.<br/>
+     * Will return false if the pick up query has been cancelled.
      */
     Dicees.pickUp = function(){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
@@ -921,7 +922,8 @@
      * @name pickUpByIds
      * @method
      * @param {Array<number>} diceIdArray contains the ids of the dice you want to pick up
-     * @returns {Promise<boolean>} Returns true when the dice have been picked up
+     * @returns {Promise<boolean>} Returns true when the dice have been picked up.<br/>
+     * Will return false if the pick up query has been cancelled.
      */
     Dicees.pickUpByIds = function(diceIdArray){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
@@ -959,7 +961,8 @@
      * In developpment mode, you can use your F2 key to simulate a throw.
      * @name rollDicees
      * @method
-     * @returns {Promise<Array<number>>} Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).
+     * @returns {Promise<Array<number>>} Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).<br/>
+     * If the array returned is full of -1, it means that the roll query has been cancelled.
      */
     Dicees.rollDicees = function(){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
@@ -1013,7 +1016,8 @@
      * @method
      * @param {Array<number>} diceIdArray contains the ids of the dice you want to roll/reroll
      * @returns {Promise<Array<{id: number, value: number}>>} Array of Json. Each Json stands for a dice.<br/>
-     * Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).
+     * Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).<br/>
+     * If all values are equal to -1, it means that the roll query has been cancelled.
      */
     Dicees.rollDiceesByIds = function(diceIdArray){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
@@ -1072,13 +1076,14 @@
     /**
      * Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
      * After the roll the result of these dice is returned.<br/>
-     * If the query is canceled, all the values returned will be -1<br/>
+     * If the query is canceled, all the values returned will be -1.<br/>
      * In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.<br/>
-     * If a dice has not been picked-up, it will not be thrown.<br/>
+     * If a dice has not been picked-up, it will not be thrown.
      * @name rollDiceesAutoDetect
      * @method
-     * @returns {Promise<Array<Number>>} Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.
+     * @returns {Promise<Array<Number>>} Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.<br/>
+     * If the array returned is full of -1, it means that the roll query has been cancelled.
      */
     Dicees.rollDiceesAutoDetect = function(){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
@@ -1133,15 +1138,16 @@
     /**
      * Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
      * After the roll the result of these dice is returned.<br/>
-     * If the query is canceled, all the values returned will be -1<br/>
+     * If the query is canceled, all the values returned will be -1.<br/>
      * In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
      * In developpment mode, you can use your F2 key to simulate a throw.<br/>
-     * If a dice has not been picked-up, it will not be thrown.<br/>
+     * If a dice has not been picked-up, it will not be thrown.
      * @name rollDiceesAutoDetectByIds
      * @method
      * @param {Array<number>} diceIdArray contains the ids of the dice you want to detect if they are thown or not
      * @returns {Promise<Array<{id: number, value: number}>>} Array of Json. Each Json stands for a dice.<br/>
-     * Id is the id of the dice (starting from 0) and value is the result of the dice (-1 to 6, 0 meaning the dice is broken and -1 meaning the dice has not been thrown).
+     * Id is the id of the dice (starting from 0) and value is the result of the dice (-1 to 6, 0 meaning the dice is broken and -1 meaning the dice has not been thrown).<br/>
+     * If all values are equal to -1, it means that the roll query has been cancelled.
      */
     Dicees.rollDiceesAutoDetectByIds = function(diceIdArray){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
