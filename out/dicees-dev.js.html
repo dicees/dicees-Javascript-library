@@ -111,6 +111,8 @@
   }
 
   let cancelAutoRoll = new Event('dicees-cancelAutoRoll');
+  let cancelRollDicees = new Event('dicees-cancelRollDicees');
+  let cancelPickUp = new Event('dicees-cancelPickUp');
 
   const fakePlayers = [
     {
@@ -448,6 +450,40 @@
     }
 
     /**
+     * Send a message to the dice to stop waiting for a pick up.
+     * @name cancelPickUp
+     * @method
+     * @returns {Promise}
+     */
+    Dicees.cancelPickUp = function(){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('cancelPickUp');
+      }
+      else{
+        document.dispatchEvent(cancelPickUp);
+        console.log("Pick up cancelled!");
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
+     * Send a message to the dice to stop waiting for a roll.
+     * @name cancelRollDicees
+     * @method
+     * @returns {Promise}
+     */
+    Dicees.cancelRollDicees = function(){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('cancelRollDicees');
+      }
+      else{
+        document.dispatchEvent(cancelRollDicees);
+        console.log("Roll cancelled!");
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
      * Send a message to the dice to stop trying to detect a reroll.
      * @name cancelRollDiceesAutoDetect
      * @method
@@ -459,6 +495,7 @@
       }
       else{
         document.dispatchEvent(cancelAutoRoll);
+        console.log("Auto-detection cancelled!");
         return new Promise(resolve => resolve(0));
       }
     }
@@ -870,31 +907,121 @@
     }
 
     /**
-     * Send a message to the dice for them to wait to be rolled.&lt;br/>
+     * Send a message to all dice for them to wait to be picked up.&lt;br/>
+     * Once they have been rolled they will send their value back.&lt;br/>
+     * In developpment mode, you can use your F3 key to simulate a gereral pick up.
+     * @name pickUp
+     * @method
+     * @returns {Promise&lt;boolean>} Returns true when the dice have been picked up.&lt;br/>
+     * Will return false if the pick up query has been cancelled.
+     */
+    Dicees.pickUp = function(){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('pickUp');
+      }
+      else{
+        return new Promise(resolve => {
+          document.addEventListener("keydown", _pickUpEvent);
+          document.addEventListener("dicees-cancelPickUp", _cancelPickUp);
+          function _cancelPickUp(){
+            document.removeEventListener("keydown", _pickUpEvent);
+            document.removeEventListener("dicees-cancelPickUp", _cancelPickUp);
+            resolve(false);
+          }
+          function _pickUpEvent(event){
+            if (event.isComposing || event.keyCode === 229) {
+              return;
+            }
+            if(event.keyCode === 114){
+              document.removeEventListener("keydown", _pickUpEvent);
+              document.removeEventListener("dicees-cancelPickUp", _cancelPickUp);
+              resolve(true);
+              console.log('All dice have been picked up!');
+            }
+          }
+        });
+      }
+    }
+
+    /**
+     * Send a message to specific dice for them to wait to be picked up.&lt;br/>
+     * Once they have been rolled they will send their value back.&lt;br/>
+     * In developpment mode, you can use your F3 key to simulate a gereral pick up.
+     * @name pickUpByIds
+     * @method
+     * @param {Array&lt;number>} diceIdArray contains the ids of the dice you want to pick up
+     * @returns {Promise&lt;boolean>} Returns true when the dice have been picked up.&lt;br/>
+     * Will return false if the pick up query has been cancelled.
+     */
+    Dicees.pickUpByIds = function(diceIdArray){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('pickUpByIds', diceIdArray);
+      }
+      else{
+        return new Promise(resolve => {
+          document.addEventListener("keydown", _pickUpEvent);
+          document.addEventListener("dicees-cancelPickUp", _cancelPickUpById);
+          function _cancelPickUpById(){
+            document.removeEventListener("keydown", _pickUpEvent);
+            document.removeEventListener("dicees-cancelPickUp", _cancelPickUpById);
+            resolve(false);
+          }
+          function _pickUpEvent(event){
+            if (event.isComposing || event.keyCode === 229) {
+              return;
+            }
+            if(event.keyCode === 114){
+              document.removeEventListener("keydown", _pickUpEvent);
+              document.removeEventListener("dicees-cancelPickUp", _cancelPickUpById);
+              resolve(true);
+              for(let i=0; i&lt;diceIdArray.length; i++){
+                console.log(`Dice ${diceIdArray[i]} has been picked up!`);
+              }
+            }
+          }
+        });
+      }
+    }
+
+    /**
+     * Send a message to all dice for them to wait to be rolled.&lt;br/>
      * Once they have been rolled they will send their value back.&lt;br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
      * @name rollDicees
      * @method
-     * @param {number} numberOfDice number of dice to roll
-     * @returns {Promise&lt;Array&lt;number>>} Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).
+     * @returns {Promise&lt;Array&lt;number>>} Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).&lt;br/>
+     * If the array returned is full of -1, it means that the roll query has been cancelled.
      */
-    Dicees.rollDicees = function(numberOfDice){
+    Dicees.rollDicees = function(){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
-        return window.flutter_inappwebview.callHandler('rollDicees', numberOfDice);
+        return window.flutter_inappwebview.callHandler('rollDicees');
       }
       else{
         return new Promise(resolve => {
-          document.addEventListener("keydown", function launchDicees(event){
+          document.addEventListener("keydown", _launchDicees);
+          document.addEventListener("dicees-cancelRollDicees", _cancelRoll);
+          function _cancelRoll(){
+            document.removeEventListener("keydown", _launchDicees);
+            document.removeEventListener("dicees-cancelRollDicees", _cancelRoll);
             let diceesResult = [];
             let data = diceesData.data.slice();
-            for(let i=0; i&lt;numberOfDice; i++){
+            for(let i=0; i&lt;data.length; i++){
+              diceesResult[i] = -1;
+            }
+            resolve(diceesResult);
+          }
+          function _launchDicees(event){
+            let diceesResult = [];
+            let data = diceesData.data.slice();
+            for(let i=0; i&lt;data.length; i++){
               diceesResult[i] = data[i].state === 4 ? getRandom1ToMax(diceesData.data[i].dXMode) : getRandom1ToMax(6);
             }
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", launchDicees);
+              document.removeEventListener("keydown", _launchDicees);
+              document.removeEventListener("dicees-cancelRollDicees", _cancelRoll);
               resolve(diceesResult);
               let newData = data.map((e, i) => {
                 e.faceUp = diceesResult[i];
@@ -903,13 +1030,13 @@
               diceesData.data = newData;
               console.log(diceesData);
             }
-          });
+          }
         });
       }
     }
 
     /**
-     * Send a message to the dice for them to wait to be rolled.&lt;br/>
+     * Send a message to specific dice for them to wait to be rolled.&lt;br/>
      * Once they have been rolled they will their value back.&lt;br/>
      * You can choose specifically which dice to roll.&lt;br/>
      * In developpment mode, you can use your F2 key to simulate a throw.
@@ -917,28 +1044,44 @@
      * @method
      * @param {Array&lt;number>} diceIdArray contains the ids of the dice you want to roll/reroll
      * @returns {Promise&lt;Array&lt;{id: number, value: number}>>} Array of Json. Each Json stands for a dice.&lt;br/>
-     * Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).
+     * Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).&lt;br/>
+     * If all values are equal to -1, it means that the roll query has been cancelled.
      */
     Dicees.rollDiceesByIds = function(diceIdArray){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
         return window.flutter_inappwebview.callHandler('rollDiceesById', diceIdArray);
       }
       else{
-        let diceesResult = [];
-        let data = diceesData.data.slice();
-        for(let i=0; i&lt;diceIdArray.length; i++){
-            diceesResult[i] = {
-              id : diceIdArray[i],
-              value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
-            };
-        }
         return new Promise(resolve => {
-          document.addEventListener("keydown", function launchDiceesById(event){
+          document.addEventListener("keydown", _launchDiceesById);
+          document.addEventListener("dicees-cancelRollDicees", _cancelRollById);
+          function _cancelRollById(){
+            document.removeEventListener("keydown", _launchDiceesById);
+            document.removeEventListener("dicees-cancelRollDicees", _cancelRollById);
+            let diceesResult = [];
+            for(let i=0; i&lt;diceIdArray.length; i++){
+                diceesResult[i] = {
+                  id : diceIdArray[i],
+                  value : -1
+                };
+            }
+            resolve(diceesResult);
+          }
+          function _launchDiceesById(event){
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
             if(event.keyCode === 113){
-              document.removeEventListener("keydown", launchDiceesById);
+              document.removeEventListener("dicees-cancelRollDicees", _cancelRollById);
+              document.removeEventListener("keydown", _launchDiceesById);
+              let diceesResult = [];
+              let data = diceesData.data.slice();
+              for(let i=0; i&lt;diceIdArray.length; i++){
+                  diceesResult[i] = {
+                    id : diceIdArray[i],
+                    value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
+                  };
+              }
               resolve(diceesResult);
               let newData = data.map((e, i) => {
                 if(diceIdArray.includes(e.id)){
@@ -953,7 +1096,7 @@
               diceesData.data = newData;
               console.log(diceesData);
             }
-          });
+          }
         });
       }
     }
@@ -961,13 +1104,14 @@
     /**
      * Send a message to the dice to wait and see which one of them are picked up to be rolled.&lt;br/>
      * After the roll the result of these dice is returned.&lt;br/>
-     * If the query is canceled, all the values returned will be -1&lt;br/>
-     * In developpment mode, you can use your A, Z, E, R and T key to simulate a pick-up.&lt;br/>
+     * If the query is canceled, all the values returned will be -1.&lt;br/>
+     * In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.&lt;br/>
      * In developpment mode, you can use your F2 key to simulate a throw.&lt;br/>
-     * If a dice has not been picked-up, it will not be thrown.&lt;br/>
+     * If a dice has not been picked-up, it will not be thrown.
      * @name rollDiceesAutoDetect
      * @method
-     * @returns {Promise&lt;Array&lt;Number>>} Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.
+     * @returns {Promise&lt;Array&lt;Number>>} Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.&lt;br/>
+     * If the array returned is full of -1, it means that the roll query has been cancelled.
      */
     Dicees.rollDiceesAutoDetect = function(){
       if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
@@ -977,50 +1121,113 @@
         return new Promise((resolve, reject) => {
           let dicesId = [];
           console.log('Event Listener added');
-          document.addEventListener("keydown", rollAutoDice);
-          document.addEventListener('dicees-cancelAutoRoll', function cancel(){
-            document.removeEventListener('dicees-cancelAutoRoll', cancel);
-            document.removeEventListener('keydown', rollAutoDice);
+          document.addEventListener("keydown", _rollAutoDice);
+          document.addEventListener('dicees-cancelAutoRoll', _cancelAutoDetect);
+          function _cancelAutoDetect(){
+            document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetect);
+            document.removeEventListener('keydown', _rollAutoDice);
             resolve([-1, -1, -1, -1, -1]);
-          });
-          function rollAutoDice(event){
+          }
+          function _rollAutoDice(event){
+            event.preventDefault();
             if (event.isComposing || event.keyCode === 229) {
               return;
             }
-            if(event.keyCode === 65 || event.keyCode === 90 || event.keyCode === 69 || event.keyCode === 82 || event.keyCode === 84 || event.keyCode === 113){
-              if(event.keyCode === 65 &amp;&amp; !dicesId.includes(0)){
-                dicesId.push(0);
+            if(event.keyCode > 48 &amp;&amp; event.keyCode &lt; 54){
+              if(!dicesId.includes(event.keyCode-49)){
+                dicesId.push(event.keyCode-49);
+                console.log(`${event.keyCode-49} picked!`)
               }
-              if(event.keyCode === 90 &amp;&amp; !dicesId.includes(1)){
-                dicesId.push(1);
+            }
+            if(event.keyCode === 113){
+              document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetect);
+              document.removeEventListener('keydown', _rollAutoDice);
+              let diceesResult = [];
+              let data = diceesData.data.slice();
+              for(let i=0; i&lt;diceesData.number; i++){
+                diceesResult[i] = dicesId.includes(i) ? (data[i].state === 4 ? getRandom1ToMax(data[i].dXMode) : getRandom1ToMax(6)) : -1;
               }
-              if(event.keyCode === 69 &amp;&amp; !dicesId.includes(2)){
-                dicesId.push(2);
-              }
-              if(event.keyCode === 82 &amp;&amp; !dicesId.includes(3)){
-                dicesId.push(3);
-              }
-              if(event.keyCode === 84 &amp;&amp; !dicesId.includes(4)){
-                dicesId.push(4);
-              }
-              if(event.keyCode === 113){
-                document.removeEventListener("keydown", rollAutoDice);
-                let diceesResult = [];
-                let data = diceesData.data.slice();
-                for(let i=0; i&lt;diceesData.number; i++){
-                  diceesResult[i] = dicesId.includes(i) ? (data[i].state === 4 ? getRandom1ToMax(data[i].dXMode) : getRandom1ToMax(6)) : -1;
+              resolve(diceesResult);
+              console.log(diceesResult);
+              let newData = data.map((e, i) => {
+                if(dicesId.includes(e.id)){
+                  e.faceUp = diceesResult[i];
                 }
-                resolve(diceesResult);
-                console.log(diceesResult);
-                let newData = data.map((e, i) => {
-                  if(dicesId.includes(e.id)){
-                    e.faceUp = diceesResult[i];
-                  }
-                  return e;
-                })
-                diceesData.data = newData;
-                console.log(diceesData);
+                return e;
+              })
+              diceesData.data = newData;
+              console.log(diceesData);
+            }
+          }
+        })
+      }
+    }
+
+    /**
+     * Send a message to the dice to wait and see which one of them are picked up to be rolled.&lt;br/>
+     * After the roll the result of these dice is returned.&lt;br/>
+     * If the query is canceled, all the values returned will be -1.&lt;br/>
+     * In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.&lt;br/>
+     * In developpment mode, you can use your F2 key to simulate a throw.&lt;br/>
+     * If a dice has not been picked-up, it will not be thrown.
+     * @name rollDiceesAutoDetectByIds
+     * @method
+     * @param {Array&lt;number>} diceIdArray contains the ids of the dice you want to detect if they are thown or not
+     * @returns {Promise&lt;Array&lt;{id: number, value: number}>>} Array of Json. Each Json stands for a dice.&lt;br/>
+     * Id is the id of the dice (starting from 0) and value is the result of the dice (-1 to 6, 0 meaning the dice is broken and -1 meaning the dice has not been thrown).&lt;br/>
+     * If all values are equal to -1, it means that the roll query has been cancelled.
+     */
+    Dicees.rollDiceesAutoDetectByIds = function(diceIdArray){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('rollDiceesAutoDetectByIds', diceIdArray);
+      }
+      else{
+        return new Promise((resolve, reject) => {
+          let dicesId = [];
+          console.log('Event Listener added');
+          document.addEventListener("keydown", _rollAutoDiceById);
+          document.addEventListener('dicees-cancelAutoRoll', _cancelAutoDetectById);
+          function _cancelAutoDetectById(){
+            document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetectById);
+            document.removeEventListener('keydown', _cancelAutoDetectById);
+            let diceesResults = [];
+            for(let i=0; i&lt;diceIdArray.length; i++){
+              diceesResults[i] = {
+                id: diceIdArray[i],
+                value: -1
               }
+            }
+            resolve(diceesResults);
+          }
+          function _rollAutoDiceById(event){
+            event.preventDefault();
+            if (event.isComposing || event.keyCode === 229) {
+              return;
+            }
+            if(event.keyCode > 48 &amp;&amp; event.keyCode &lt; 54){
+              if(!dicesId.includes(event.keyCode-49) &amp;&amp; diceIdArray.includes(event.keyCode-49)){
+                dicesId.push(event.keyCode-49);
+                console.log(`${event.keyCode-49} picked!`)
+              }
+            }
+            if(event.keyCode === 113){
+              document.removeEventListener('dicees-cancelAutoRoll', _cancelAutoDetectById);
+              document.removeEventListener('keydown', _cancelAutoDetectById);
+              let diceesResult = [];
+              let data = diceesData.data.slice();
+              for(let i=0; i&lt;diceIdArray.length; i++){
+                if(dicesId.includes(diceIdArray[i])){
+                  diceesResult.push({
+                    id : diceIdArray[i],
+                    value : data[diceIdArray[i]].state === 4 ? getRandom1ToMax(data[diceIdArray[i]].dXMode) : getRandom1ToMax(6)
+                  });
+                  data[diceIdArray[i]].faceUp = diceesResult[diceesResult.length-1].value;
+                }
+              }
+              resolve(diceesResult);
+              console.log(diceesResult);
+              diceesData.data = data;
+              console.log(diceesData);
             }
           }
         })
@@ -1147,13 +1354,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#clearSkin">clearSkin</a></li><li><a href="global.html#clearSkinById">clearSkinById</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#displaySkinById">displaySkinById</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li><li><a href="global.html#switchMode">switchMode</a></li><li><a href="global.html#switchModeById">switchModeById</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#blinkById">blinkById</a></li><li><a href="global.html#cancelPickUp">cancelPickUp</a></li><li><a href="global.html#cancelRollDicees">cancelRollDicees</a></li><li><a href="global.html#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect</a></li><li><a href="global.html#changeDiceesColor">changeDiceesColor</a></li><li><a href="global.html#changeDiceesColorById">changeDiceesColorById</a></li><li><a href="global.html#changeDiceesFaceColor">changeDiceesFaceColor</a></li><li><a href="global.html#clearSkin">clearSkin</a></li><li><a href="global.html#clearSkinById">clearSkinById</a></li><li><a href="global.html#displayClassicalDice">displayClassicalDice</a></li><li><a href="global.html#displaySkin">displaySkin</a></li><li><a href="global.html#displaySkinById">displaySkinById</a></li><li><a href="global.html#getDiceesCount">getDiceesCount</a></li><li><a href="global.html#getFaceColors">getFaceColors</a></li><li><a href="global.html#getPlayers">getPlayers</a></li><li><a href="global.html#pickUp">pickUp</a></li><li><a href="global.html#pickUpByIds">pickUpByIds</a></li><li><a href="global.html#rollDicees">rollDicees</a></li><li><a href="global.html#rollDiceesAutoDetect">rollDiceesAutoDetect</a></li><li><a href="global.html#rollDiceesAutoDetectByIds">rollDiceesAutoDetectByIds</a></li><li><a href="global.html#rollDiceesByIds">rollDiceesByIds</a></li><li><a href="global.html#setLedColor">setLedColor</a></li><li><a href="global.html#switchMode">switchMode</a></li><li><a href="global.html#switchModeById">switchModeById</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Fri May 15 2020 11:40:04 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue May 19 2020 09:20:17 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>

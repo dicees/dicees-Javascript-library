@@ -7,6 +7,12 @@
 <dt><a href="#blinkById">blinkById(numberOfBlink, id)</a> ⇒ <code>Promise</code></dt>
 <dd><p>Make a specific dice blink.</p>
 </dd>
+<dt><a href="#cancelPickUp">cancelPickUp()</a> ⇒ <code>Promise</code></dt>
+<dd><p>Send a message to the dice to stop waiting for a pick up.</p>
+</dd>
+<dt><a href="#cancelRollDicees">cancelRollDicees()</a> ⇒ <code>Promise</code></dt>
+<dd><p>Send a message to the dice to stop waiting for a roll.</p>
+</dd>
 <dt><a href="#cancelRollDiceesAutoDetect">cancelRollDiceesAutoDetect()</a> ⇒ <code>Promise</code></dt>
 <dd><p>Send a message to the dice to stop trying to detect a reroll.</p>
 </dd>
@@ -43,13 +49,23 @@
 <dt><a href="#getPlayers">getPlayers()</a> ⇒ <code>Promise.&lt;Array.&lt;{age: number, color: string, gender: string, id: number, name: string}&gt;&gt;</code></dt>
 <dd><p>Get the players data from the app.</p>
 </dd>
-<dt><a href="#rollDicees">rollDicees(numberOfDice)</a> ⇒ <code>Promise.&lt;Array.&lt;number&gt;&gt;</code></dt>
-<dd><p>Send a message to the dice for them to wait to be rolled.<br/>
+<dt><a href="#pickUp">pickUp()</a> ⇒ <code>Promise.&lt;boolean&gt;</code></dt>
+<dd><p>Send a message to all dice for them to wait to be picked up.<br/>
+Once they have been rolled they will send their value back.<br/>
+In developpment mode, you can use your F3 key to simulate a gereral pick up.</p>
+</dd>
+<dt><a href="#pickUpByIds">pickUpByIds(diceIdArray)</a> ⇒ <code>Promise.&lt;boolean&gt;</code></dt>
+<dd><p>Send a message to specific dice for them to wait to be picked up.<br/>
+Once they have been rolled they will send their value back.<br/>
+In developpment mode, you can use your F3 key to simulate a gereral pick up.</p>
+</dd>
+<dt><a href="#rollDicees">rollDicees()</a> ⇒ <code>Promise.&lt;Array.&lt;number&gt;&gt;</code></dt>
+<dd><p>Send a message to all dice for them to wait to be rolled.<br/>
 Once they have been rolled they will send their value back.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.</p>
 </dd>
 <dt><a href="#rollDiceesByIds">rollDiceesByIds(diceIdArray)</a> ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code></dt>
-<dd><p>Send a message to the dice for them to wait to be rolled.<br/>
+<dd><p>Send a message to specific dice for them to wait to be rolled.<br/>
 Once they have been rolled they will their value back.<br/>
 You can choose specifically which dice to roll.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.</p>
@@ -57,10 +73,18 @@ In developpment mode, you can use your F2 key to simulate a throw.</p>
 <dt><a href="#rollDiceesAutoDetect">rollDiceesAutoDetect()</a> ⇒ <code>Promise.&lt;Array.&lt;Number&gt;&gt;</code></dt>
 <dd><p>Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
 After the roll the result of these dice is returned.<br/>
-If the query is canceled, all the values returned will be -1<br/>
-In developpment mode, you can use your A, Z, E, R and T key to simulate a pick-up.<br/>
+If the query is canceled, all the values returned will be -1.<br/>
+In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.<br/>
-If a dice has not been picked-up, it will not be thrown.<br/></p>
+If a dice has not been picked-up, it will not be thrown.</p>
+</dd>
+<dt><a href="#rollDiceesAutoDetectByIds">rollDiceesAutoDetectByIds(diceIdArray)</a> ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code></dt>
+<dd><p>Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
+After the roll the result of these dice is returned.<br/>
+If the query is canceled, all the values returned will be -1.<br/>
+In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
+In developpment mode, you can use your F2 key to simulate a throw.<br/>
+If a dice has not been picked-up, it will not be thrown.</p>
 </dd>
 <dt><a href="#setLedColor">setLedColor(color, id, face, column, line, [skinNumber])</a> ⇒ <code>Promise</code></dt>
 <dd><p>Change the color of a specific LED of a specific dice.</p>
@@ -96,6 +120,18 @@ Make a specific dice blink.
 | numberOfBlink | <code>number</code> | number of time the dicees will blink (max 255) |
 | id | <code>number</code> | id of the dice you want to affect, starting from 0 |
 
+<a name="cancelPickUp"></a>
+
+## cancelPickUp() ⇒ <code>Promise</code>
+Send a message to the dice to stop waiting for a pick up.
+
+**Kind**: global function
+<a name="cancelRollDicees"></a>
+
+## cancelRollDicees() ⇒ <code>Promise</code>
+Send a message to the dice to stop waiting for a roll.
+
+**Kind**: global function
 <a name="cancelRollDiceesAutoDetect"></a>
 
 ## cancelRollDiceesAutoDetect() ⇒ <code>Promise</code>
@@ -229,31 +265,53 @@ Get the players data from the app.
 
 **Kind**: global function
 **Returns**: <code>Promise.&lt;Array.&lt;{age: number, color: string, gender: string, id: number, name: string}&gt;&gt;</code> - Array of Json, each Json stands for a player.
+<a name="pickUp"></a>
+
+## pickUp() ⇒ <code>Promise.&lt;boolean&gt;</code>
+Send a message to all dice for them to wait to be picked up.<br/>
+Once they have been rolled they will send their value back.<br/>
+In developpment mode, you can use your F3 key to simulate a gereral pick up.
+
+**Kind**: global function
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - Returns true when the dice have been picked up.<br/>
+Will return false if the pick up query has been cancelled.
+<a name="pickUpByIds"></a>
+
+## pickUpByIds(diceIdArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
+Send a message to specific dice for them to wait to be picked up.<br/>
+Once they have been rolled they will send their value back.<br/>
+In developpment mode, you can use your F3 key to simulate a gereral pick up.
+
+**Kind**: global function
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - Returns true when the dice have been picked up.<br/>
+Will return false if the pick up query has been cancelled.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| diceIdArray | <code>Array.&lt;number&gt;</code> | contains the ids of the dice you want to pick up |
+
 <a name="rollDicees"></a>
 
-## rollDicees(numberOfDice) ⇒ <code>Promise.&lt;Array.&lt;number&gt;&gt;</code>
-Send a message to the dice for them to wait to be rolled.<br/>
+## rollDicees() ⇒ <code>Promise.&lt;Array.&lt;number&gt;&gt;</code>
+Send a message to all dice for them to wait to be rolled.<br/>
 Once they have been rolled they will send their value back.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.
 
 **Kind**: global function
-**Returns**: <code>Promise.&lt;Array.&lt;number&gt;&gt;</code> - Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).
-
-| Param | Type | Description |
-| --- | --- | --- |
-| numberOfDice | <code>number</code> | number of dice to roll |
-
+**Returns**: <code>Promise.&lt;Array.&lt;number&gt;&gt;</code> - Values of the dice once they have been rolled (from 0 to 6, 0 meaning the dice is broken).<br/>
+If the array returned is full of -1, it means that the roll query has been cancelled.
 <a name="rollDiceesByIds"></a>
 
 ## rollDiceesByIds(diceIdArray) ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code>
-Send a message to the dice for them to wait to be rolled.<br/>
+Send a message to specific dice for them to wait to be rolled.<br/>
 Once they have been rolled they will their value back.<br/>
 You can choose specifically which dice to roll.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.
 
 **Kind**: global function
-**Returns**: <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code> - Array of Json. Each Json stands Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).
-
+**Returns**: <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code> - Array of Json. Each Json stands for a dice.<br/>
+Id is the id of the dice (starting from 0) and value is the result of the dice (0 to 6, 0 meaning the dice is broken).<br/>
+If all values are equal to -1, it means that the roll query has been cancelled.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -264,13 +322,33 @@ In developpment mode, you can use your F2 key to simulate a throw.
 ## rollDiceesAutoDetect() ⇒ <code>Promise.&lt;Array.&lt;Number&gt;&gt;</code>
 Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
 After the roll the result of these dice is returned.<br/>
-If the query is canceled, all the values returned will be -1<br/>
-In developpment mode, you can use your A, Z, E, R and T key to simulate a pick-up.<br/>
+If the query is canceled, all the values returned will be -1.<br/>
+In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
 In developpment mode, you can use your F2 key to simulate a throw.<br/>
 If a dice has not been picked-up, it will not be thrown.
 
 **Kind**: global function
-**Returns**: <code>Promise.&lt;Array.&lt;Number&gt;&gt;</code> - Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.
+**Returns**: <code>Promise.&lt;Array.&lt;Number&gt;&gt;</code> - Values of the dice once they have been rolled from -1 to 6, 0 meaning the dice is broken, -1 meaning the dice has not been picked-up.<br/>
+If the array returned is full of -1, it means that the roll query has been cancelled.
+<a name="rollDiceesAutoDetectByIds"></a>
+
+## rollDiceesAutoDetectByIds(diceIdArray) ⇒ <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code>
+Send a message to the dice to wait and see which one of them are picked up to be rolled.<br/>
+After the roll the result of these dice is returned.<br/>
+If the query is canceled, all the values returned will be -1.<br/>
+In developpment mode, you can use your 1, 2, 3, 4 and 5 digit key to simulate a pick up.<br/>
+In developpment mode, you can use your F2 key to simulate a throw.<br/>
+If a dice has not been picked-up, it will not be thrown.
+
+**Kind**: global function
+**Returns**: <code>Promise.&lt;Array.&lt;{id: number, value: number}&gt;&gt;</code> - Array of Json. Each Json stands for a dice.<br/>
+Id is the id of the dice (starting from 0) and value is the result of the dice (-1 to 6, 0 meaning the dice is broken and -1 meaning the dice has not been thrown).<br/>
+If all values are equal to -1, it means that the roll query has been cancelled.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| diceIdArray | <code>Array.&lt;number&gt;</code> | contains the ids of the dice you want to detect if they are thown or not |
+
 <a name="setLedColor"></a>
 
 ## setLedColor(color, id, face, column, line, [skinNumber]) ⇒ <code>Promise</code>
