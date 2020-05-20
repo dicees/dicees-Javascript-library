@@ -88,11 +88,7 @@ What is a skin:
 
 ## Dicees Simulation
 
-<<<<<<< HEAD
 While you are still creating your app, you will certainly want to know if your application would work in the Dicees Application. Luckily for you, the DiceesJS SDK allows to simulate everything in your browser.
-=======
-While you are still creating your app, you will certainly want to know if your application would work in the Dicees Application. Lucky for you, the DiceesJS SDK allows to simulate everything in your browser.
->>>>>>> afebf972a209b3c8dc241df7beafb261521d5abb
 
 ### Simulate a throw
 
