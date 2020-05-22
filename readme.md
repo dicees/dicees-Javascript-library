@@ -178,6 +178,9 @@ It will allow you to enter the IP address of your local development server and t
 ## Methods
 
 <dl>
+<dt><a href="#askVersion">askVersion(versionId)</a> ⇒ <code>Promise.&lt;string&gt;</code></dt>
+<dd><p>Get the current version of the element you ask for.</p>
+</dd>
 <dt><a href="#blink">blink(numberOfBlink)</a> ⇒ <code>Promise</code></dt>
 <dd><p>Make the dicees blink.</p>
 </dd>
@@ -273,6 +276,26 @@ If a dice has not been picked-up, it will not be thrown.</p>
 <dd><p>Change the mode of a specific dice.</p>
 </dd>
 </dl>
+
+<a name="askVersion"></a>
+
+## askVersion(versionId) ⇒ <code>Promise.&lt;string&gt;</code>
+Get the current version of the element you ask for.
+
+**Kind**: global function
+**Returns**: <code>Promise.&lt;string&gt;</code> - string of the current version you asked for
+
+| Param | Type | Description |
+| --- | --- | --- |
+| versionId | <code>number</code> | id corresponding to the element you want the version |
+
+| Version Id | Element |
+| --- | --- |
+| 1 | Bluetooth API |
+| 2 | Dicees Hardware |
+| 3 | Dicees Firmware |
+| 4 | Dicees Application |
+| 5 | JavaScript SDK |
 
 <a name="blink"></a>
 
