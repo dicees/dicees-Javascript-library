@@ -387,6 +387,13 @@
 
     //functions to add here !
 
+    /**
+     * Get the current version of the element you ask for.
+     * @name askVersion
+     * @method
+     * @param {number} versionId id corresponding to the element you want the version
+     * @returns {Promise<string>} string of the current version you asked for
+     */
     Dicees.askVersion = function(versionId){
       if(versionId === 5){
         return new Promise(resolve => resolve(JSVersion));
