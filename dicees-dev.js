@@ -1,5 +1,7 @@
 (function (window){
 
+  const JSVersion = '1.0.0';
+
   let diceesData;
   let facesInit = [
     {
@@ -384,6 +386,18 @@
     let Dicees = {};
 
     //functions to add here !
+
+    Dicees.askVersion = function(versionId){
+      if(versionId === 5){
+        return new Promise(resolve => resolve(JSVersion));
+      }
+      else if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        return window.flutter_inappwebview.callHandler('askVersion', versionId);
+      }
+      else{
+        return new Promise(resolve => resolve('Not available in simulation mode!'));
+      }
+    }
 
     /**
      * Make the dicees blink.
