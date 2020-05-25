@@ -157,7 +157,7 @@ Each change in focus or in life value will be displayed in your web console.
 
 ```
 async function switchToLifeCounter(){
-  await Dicees.Dicees.switchMode(5, 15);
+  await Dicees.switchMode(5, 15);
   //You can now use your digit keys to change dice focus
   //And your NumPad keys to change the dice life value
 }
