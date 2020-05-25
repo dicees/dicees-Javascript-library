@@ -167,7 +167,7 @@ switchToLifeCounter();
 
 ### Simulation of other methods
 
-The DiceesJS SDK, in development, simulates the state 5 Dicees and keeps track of their changes through the entire experience of your application. Each time you time use a method of this library, a message will appear in your web console showing you how your code has affected the 5 fake Dicees.
+The DiceesJS SDK, in development, simulates the state 5 Dicees and keeps track of their changes through the entire experience of your application. Each time you use a method of this library, a message will appear in your web console showing you how your code has affected the 5 fake Dicees.
 
 ## Test with real Dicees
 
