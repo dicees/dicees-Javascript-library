@@ -1265,6 +1265,53 @@
     }
 
     /**
+     * In simulation mode: change the number of fake Dicees available (by default 5).<br>
+     * In production: will just warn the user if he is using the app with the wrong number of Dicees.
+     * @name setRecommendedNumberOfDicees
+     * @method
+     * @param {number} number number of Dicees you need for your application
+     * @returns {Promise}
+     */
+    Dicees.setRecommendedNumberOfDicees = function(number){
+      if(window.flutter_inappwebview || window.flutter_inappwebview != null || typeof window.flutter_inappwebview !== "undefined"){
+        let promise = window.flutter_inappwebview.callHandler('getDiceesCount');
+        promise.then((diceNumber) => {
+          if(diceNumber !== number){
+            alert(`Be careful ! You need ${number} Dicees to use this app. If you use it with the wrong number of Dicees, some functionalities might not be available.`);
+          }
+        })
+        return new Promise(resolve => resolve(0));
+      }
+      else{
+        diceesData.number = number;
+        let data = diceesData.data.slice();
+        if(number > data.length){
+          for(let i=data.length; i<number; i++){
+            data[i] = {
+              id: i,
+              faceUp : 0,
+              activeSkin: 1,
+              state : 3,
+              dXMode : 20,
+              lifeCounter: 20,
+              skins : new Map(),
+              faces: copy(facesInit)
+            }
+          }
+        }
+        else if(number < data.length){
+          let originalNumber = data.length;
+          for(let i=number; i<originalNumber; i++){
+            data = removeFromArray(data, data[number]);
+          }
+        }
+        diceesData.data = data;
+        console.log(`New total of Dicees: ${number}`);
+        return new Promise(resolve => resolve(0));
+      }
+    }
+
+    /**
      * Change the mode of all dice.
      * @name switchMode
      * @method
