@@ -269,6 +269,10 @@ If a dice has not been picked-up, it will not be thrown.</p>
 <dt><a href="#setLedColor">setLedColor(color, id, face, column, line, [skinNumber])</a> ⇒ <code>Promise</code></dt>
 <dd><p>Change the color of a specific LED of a specific dice.</p>
 </dd>
+<dt><a href="#setRecommendedNumberOfDicees">setRecommendedNumberOfDicees(number)</a> ⇒ <code>Promise</code></dt>
+<dd><p>In simulation mode: change the number of fake Dicees available (by default 5).<br>
+In production: will just warn the user if he is using the app with the wrong number of Dicees.</p>
+</dd>
 <dt><a href="#switchMode">switchMode(modeId, [initLifeOrNumberOfFace])</a> ⇒ <code>Promise</code></dt>
 <dd><p>Change the mode of all dice.</p>
 </dd>
@@ -564,6 +568,18 @@ Change the color of a specific LED of a specific dice.
 | column | <code>number</code> |  | x coordoninates of the Led you want to change, starting from 0 |
 | line | <code>number</code> |  | y coordoninates of the Led you want to change, starting from 0 |
 | [skinNumber] | <code>number</code> | <code>1</code> | id of the skin you want to affect, starting from 0 |
+
+<a name="setRecommendedNumberOfDicees"></a>
+
+## setRecommendedNumberOfDicees(number) ⇒ <code>Promise</code>
+In simulation mode: change the number of fake Dicees available (by default 5).<br>
+In production: will just warn the user if he is using the app with the wrong number of Dicees.
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| number | <code>number</code> | number of Dicees you need for your application |
 
 <a name="switchMode"></a>
 
